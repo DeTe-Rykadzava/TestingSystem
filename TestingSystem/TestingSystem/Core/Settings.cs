@@ -6,10 +6,12 @@ namespace TestingSystem.Core;
 
 public class Settings
 {
+    private const string AppSettingFilename = "appSetting.json";
+
     private static JsonNode? GetAppSettingsJson()
     {
         var directory = Directory.GetCurrentDirectory();
-        var pathToSettings = Path.Combine(directory, "appSetting.json");
+        var pathToSettings = Path.Combine(directory, AppSettingFilename);
         Console.WriteLine("Path to settings: " + pathToSettings);
         var settingsJsonString = File.ReadAllText(pathToSettings);
         var settings = JsonObject.Parse(settingsJsonString);

@@ -9,6 +9,18 @@ namespace TestingSystem.Models;
 
 public class TestingSystemDbContext : DbContext
 {
+    private static TestingSystemDbContext? _instance = null;
+
+    public static TestingSystemDbContext Instance
+    {
+        get
+        {
+            if (_instance != null)
+                return _instance;
+            return GetNewInstance();
+        }
+    }
+
     public DbSet<User> User { get; set; } = null!;
     public DbSet<Role> Role { get; set; } = null!;
 
@@ -20,6 +32,13 @@ public class TestingSystemDbContext : DbContext
         Console.WriteLine(connectionString);
         
         optionsBuilder.UseNpgsql(connectionString);
+    }
+    
+    private static TestingSystemDbContext GetNewInstance()
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<TestingSystemDbContext>();
+        var context = new TestingSystemDbContext(optionsBuilder.Options);
+        return context;
     }
     
 }

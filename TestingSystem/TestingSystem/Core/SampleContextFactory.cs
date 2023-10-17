@@ -13,14 +13,7 @@ public class SampleContextFactory : IDesignTimeDbContextFactory<TestingSystemDbC
     {
         var optionsBuilder = new DbContextOptionsBuilder<TestingSystemDbContext>();
 
-        var path = Directory.GetCurrentDirectory();
-        
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.SetBasePath(path);
-        builder.AddJsonFile("appSetting.json");
-        IConfigurationRoot config = builder.Build();
-
-        string connectionString = config.GetConnectionString("DefaultConnection");
+        string connectionString = Settings.GetConnectionString();
         optionsBuilder.UseNpgsql(connectionString);
         return new TestingSystemDbContext(optionsBuilder.Options);
     }
