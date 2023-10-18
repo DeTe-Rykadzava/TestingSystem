@@ -38,8 +38,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="appSetting.json">
+	  <AdditionalFiles Include="appSetting.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
+	  </AdditionalFiles>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 </Project>

@@ -2,11 +2,11 @@
 
 public class User
 {
-    public string Id { get; set; }
-    public string FirstName { get; set; }
-    public string SecondName { get; set; }
-    public string LastName { get; set; }
-    public string Login { get; set; }
-    public string Password { get; set; }
-    public Role UserRole { get; set; }
+    public int Id { get; set; }
+    public string FirstName { get; set; } = null!;
+    public string SecondName { get; set; } = null!;
+    public string? LastName { get; set; }
+    public string Login { get; set; } = null!;
+    public string Password { get; set; } = null!;
+    public Role UserRole { get; set; } = null!;
 }
