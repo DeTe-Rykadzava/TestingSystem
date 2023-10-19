@@ -17,6 +17,11 @@ public class MainViewModel : ViewModelBase
 
     public MainViewModel()
     {
-        privet
+        _currentContentViewModel = LoginViewModel.GetInstance(this);
+    }
+
+    public void SetView(ViewModelBase vm)
+    {
+        CurrentContentViewModel = vm;
     }
 }
