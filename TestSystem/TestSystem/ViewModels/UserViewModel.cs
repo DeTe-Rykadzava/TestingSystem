@@ -127,7 +127,7 @@ public class UserViewModel : ViewModelBase
         _user = new User();
         CanEdit = true;
         IsNewUser = true;
-        Role = Models.Role.GetRoleByName("student").Result!;
+        // 
         this.WhenAnyValue(x => x.FirstName, x => x.SecondName,
                 x => x.UserLogin, x => x.UserPassword)
             .Subscribe(s =>
@@ -138,6 +138,12 @@ public class UserViewModel : ViewModelBase
                     IsValid = false;
                 }
             });
+        SetData();
+    }
+
+    private async void SetData()
+    {
+        Role = (await Models.Role.GetRoleByName("student"))!;
     }
 
     public static UserViewModel CreateNewUser()

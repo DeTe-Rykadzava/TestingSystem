@@ -1,0 +1,54 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:TestSystem.ViewModels"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
+             x:Class="TestSystem.Views.LoginView"
+             x:DataType="vm:LoginViewModel">
+    <Border Background="Gray"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            BorderBrush="DarkGray"
+            BorderThickness="2"
+            CornerRadius="8"
+            Padding="20">
+        <Grid RowDefinitions="Auto * Auto"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center">
+            <TextBlock Grid.Row="0" Text="Вход"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       />
+            <StackPanel Grid.Row="1"
+                        Margin="5 20 0 20 "
+                        Spacing="5">
+                <TextBlock Text="Login:"
+                           FontSize="11"
+                           HorizontalAlignment="Left"/>
+                <TextBox Text="{Binding Login}"
+                         Watermark="Your password"
+                         MinWidth="150"
+                         FontSize="12"/>
+                <TextBlock Text="Password:"
+                           FontSize="11"
+                           HorizontalAlignment="Left"/>
+                <TextBox Text="{Binding Login}"
+                         Watermark="Your password"
+                         MinWidth="150"
+                         FontSize="12"
+                         PasswordChar="*"/>
+            </StackPanel>
+            <WrapPanel Grid.Row="2">
+                <Button Classes="Flat"
+                        Content="Регистрация"
+                        Margin="0 0 2 0"
+                        Command="{Binding RegisterCommand}"/>
+                <Button Content="Войти"
+                        Margin="2 0 0 0 "
+                        Command="{Binding LoginCommand}"/>
+            </WrapPanel>
+        </Grid>
+    </Border>
+</UserControl>

@@ -44,15 +44,15 @@ public class Role
         
         // admin
         var adminRole = new Role("Admin");
-        await TestingSystemDbContext.Instance.Role.AddAsync(adminRole);
-        
+        roles.Add(adminRole);
         // teacher
         var teacherRole = new Role("Teacher");
-        await TestingSystemDbContext.Instance.Role.AddAsync(teacherRole);
-        
+        roles.Add(teacherRole);
         // student
         var studentRole = new Role("student");
-        await TestingSystemDbContext.Instance.Role.AddAsync(studentRole);
+        roles.Add(studentRole);
+
+        await TestingSystemDbContext.Instance.Role.AddRangeAsync(roles);
         
         try
         {

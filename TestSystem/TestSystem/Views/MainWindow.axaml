@@ -7,6 +7,8 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TestSystem.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="TestSystem">
+        Title="Test System"
+        MinHeight="600"
+        MinWidth="800">
         <views:MainView />
 </Window>
