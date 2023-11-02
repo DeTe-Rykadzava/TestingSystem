@@ -16,6 +16,8 @@ public class RegisterViewModel : ViewModelBase
 
     public ICommand RegisterCommand { get; }
 
+    public ICommand ShowLoginCommand { get; }
+    
     public RegisterViewModel(MainViewModel root)
     {
         NewUser = UserViewModel.CreateNewUser();

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:TestSystem.ViewModels"
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
-             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="TestSystem.Views.LoginView"
              x:DataType="vm:LoginViewModel">
     <Border Background="Gray"
@@ -23,22 +23,26 @@
                        />
             <StackPanel Grid.Row="1"
                         Margin="5 20 0 20 "
-                        Spacing="5">
-                <TextBlock Text="Login:"
-                           FontSize="11"
-                           HorizontalAlignment="Left"/>
-                <TextBox Text="{Binding Login}"
-                         Watermark="Your password"
-                         MinWidth="150"
-                         FontSize="12"/>
-                <TextBlock Text="Password:"
-                           FontSize="11"
-                           HorizontalAlignment="Left"/>
-                <TextBox Text="{Binding Login}"
-                         Watermark="Your password"
-                         MinWidth="150"
-                         FontSize="12"
-                         PasswordChar="*"/>
+                        Spacing="12">
+                <StackPanel>
+                    <TextBlock Text="Login:"
+                               FontSize="11"
+                               HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Login}"
+                             Watermark="Your login"
+                             MinWidth="150"
+                             FontSize="12"/>
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Password:"
+                               FontSize="11"
+                               HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding Login}"
+                             Watermark="Your password"
+                             MinWidth="150"
+                             FontSize="12"
+                             PasswordChar="*"/>
+                </StackPanel>
             </StackPanel>
             <WrapPanel Grid.Row="2">
                 <Button Classes="Flat"

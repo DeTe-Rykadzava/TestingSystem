@@ -2,7 +2,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="TestSystem.Views.RegisterView">
-    
+             xmlns:vm="clr-namespace:TestSystem.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="TestSystem.Views.RegisterView"
+             x:DataType="vm:RegisterViewModel">
+    <Border Background="Gray"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            BorderBrush="DarkGray"
+            BorderThickness="2"
+            CornerRadius="8"
+            Padding="20">
+        <Grid RowDefinitions="Auto * Auto"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+            <TextBlock Grid.Row="0" Text="Вход"
+                       FontSize="16"
+                       FontWeight="Bold"
+            />
+            <StackPanel Grid.Row="1"
+                        Margin="5 20 0 20 "
+                        Spacing="12">
+                <StackPanel>
+                    <TextBlock Text="Login:"
+                               FontSize="11"
+                               HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding NewUser.UserLogin}"
+                             Watermark="Your login"
+                             MinWidth="150"
+                             FontSize="12"/>
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Password:"
+                               FontSize="11"
+                               HorizontalAlignment="Left"/>
+                    <TextBox Text="{Binding NewUser.UserPassword}"
+                             Watermark="Your password"
+                             MinWidth="150"
+                             FontSize="12"/>
+                </StackPanel>
+            </StackPanel>
+            <WrapPanel Grid.Row="2">
+                <Button Classes="Flat"
+                        Content="Вход"
+                        Margin="0 0 2 0"
+                        Command="{Binding ShowLoginCommand }"/>
+                <Button Content="Зарегистрироваться"
+                        Margin="2 0 0 0 "
+                        Command="{Binding RegisterCommand}"/>
+            </WrapPanel>
+        </Grid>
+    </Border>
 </UserControl>
