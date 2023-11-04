@@ -56,9 +56,9 @@ public class LoginViewModel : ViewModelBase
 
         }, canLogin);
 
-        RegisterCommand = ReactiveCommand.Create(() =>
+        RegisterCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            root.SetView(new RegisterViewModel(root));
+            await root.SetView(RegisterViewModel.GetInstance(root));
         });
     }
 

@@ -127,26 +127,36 @@ public class UserViewModel : ViewModelBase
         _user = new User();
         CanEdit = true;
         IsNewUser = true;
-        // 
+        
         this.WhenAnyValue(x => x.FirstName, x => x.SecondName,
                 x => x.UserLogin, x => x.UserPassword)
             .Subscribe(s =>
             {
                 if (string.IsNullOrWhiteSpace(s.Item1) || string.IsNullOrWhiteSpace(s.Item2) ||
-                    string.IsNullOrWhiteSpace(s.Item3) || string.IsNullOrWhiteSpace(s.Item4))
+                    string.IsNullOrWhiteSpace(s.Item3) || string.IsNullOrWhiteSpace(s.Item4) ||
+                    s.Item3 == s.Item4 || s.Item4.Length < 8)
                 {
                     IsValid = false;
+                    return;
                 }
+
+                IsValid = true;
             });
+        
         SetData();
     }
 
     private async void SetData()
     {
+        await SetRole();
+    }
+
+    private async Task SetRole()
+    {
         Role = (await Models.Role.GetRoleByName("student"))!;
     }
 
-    public static UserViewModel CreateNewUser()
+    public static async Task<UserViewModel> CreateNewUser()
     {
         var vm = new UserViewModel();
         return vm;

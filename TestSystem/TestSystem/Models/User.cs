@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Splat;
 using TestSystem.ViewModels;
 
 namespace TestSystem.Models;
@@ -14,9 +15,10 @@ public class User
     public string Login { get; set; } = null!;
     public string Password { get; set; } = null!;
     public Role UserRole { get; set; } = null!;
+    
+    public Group? Group { get; set; }
+    
 
-    
-    
     private static UserViewModel? _currentUser;
     public static UserViewModel? GetCurrentUser()
     {
@@ -27,7 +29,7 @@ public class User
     {
         try
         {
-            var user = await TestingSystemDbContext.Instance.User.FirstOrDefaultAsync(x =>
+            var user = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefaultAsync(x =>
                 x.Login == login);
             if (user == null)
                 return null;
@@ -60,8 +62,13 @@ public class User
 
         try
         {
-            await TestingSystemDbContext.Instance.User.AddAsync(newUser);
-            await TestingSystemDbContext.Instance.SaveChangesAsync();
+            if (Locator.GetLocator().GetService<TestingSystemDbContext>() == null)
+            {
+                return null;
+            }
+            
+            await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.AddAsync(newUser);
+            await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
         }
         catch (Exception e)
         {

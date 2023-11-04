@@ -37,7 +37,7 @@
                     <TextBlock Text="Password:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Login}"
+                    <TextBox Text="{Binding Password}"
                              Watermark="Your password"
                              MinWidth="150"
                              FontSize="12"

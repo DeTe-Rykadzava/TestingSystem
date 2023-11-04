@@ -17,12 +17,15 @@ public class TestingSystemDbContext : DbContext
         {
             if (_instance != null)
                 return _instance;
-            return GetNewInstance();
+            return _instance = GetNewInstance();
         }
     }
 
     public DbSet<User> User { get; set; } = null!;
+    
     public DbSet<Role> Role { get; set; } = null!;
+    
+    public DbSet<Group> Group { get; set; } = null!;
 
     public TestingSystemDbContext(DbContextOptions<TestingSystemDbContext> options) : base(options) { }
 

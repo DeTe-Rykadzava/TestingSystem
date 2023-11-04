@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace TestSystem.ViewModels;
 
@@ -17,7 +18,7 @@ public class MainViewModel : ViewModelBase
         _currentContentViewModel = LoginViewModel.GetInstance(this);
     }
 
-    public void SetView(ViewModelBase vm)
+    public async Task SetView(ViewModelBase vm)
     {
         CurrentContentViewModel = vm;
     }
