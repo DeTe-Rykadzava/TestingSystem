@@ -51,6 +51,16 @@
                              FontSize="12"/>
                 </StackPanel>
                 <StackPanel>
+                    <TextBlock Text="Group or class:"
+                               FontSize="11"
+                               HorizontalAlignment="Left"/>
+                    <ComboBox ItemsSource="{Binding NewUser.LastName, FallbackValue='{x:Null}'}"
+                              SelectedItem="{Binding NewUser.CurrentGroup, FallbackValue='{x:Null}'}"
+                             PlaceholderText="Your class or group"
+                             MinWidth="150"
+                             FontSize="12"/>
+                </StackPanel>
+                <StackPanel>
                     <TextBlock Text="Login*:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>

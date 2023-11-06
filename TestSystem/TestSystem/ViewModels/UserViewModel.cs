@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using DynamicData;
 using ReactiveUI;
 using TestSystem.Models;
 
@@ -103,7 +105,17 @@ public class UserViewModel : ViewModelBase
         get;
         private set;
     }
+
+    private GroupViewModel? _currentGroup = null;
     
+    public GroupViewModel? CurrentGroup
+    {
+        get => _currentGroup;
+        set => this.RaiseAndSetIfChanged(ref _currentGroup, value);
+    }
+
+    public ObservableCollection<GroupViewModel> Groups { get; } = new ();
+
     public UserViewModel(User user)
     {
         _user = user;
@@ -149,6 +161,12 @@ public class UserViewModel : ViewModelBase
     private async void SetData()
     {
         await SetRole();
+        await SetGroups();
+    }
+
+    private async Task SetGroups()
+    {
+        Groups.AddRange(await Group.GetGroups());
     }
 
     private async Task SetRole()
