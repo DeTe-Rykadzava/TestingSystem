@@ -39,10 +39,11 @@ public class RegisterViewModel : ViewModelBase
             var user = await User.RegisterNewUser(NewUser!);
             if (user == null)
             {
-                await MessageBox.ShowMessageBox("Registration error", "Пользователь, увы, не создан");
+                await MessageBox.ShowMessageBox("Registration is error", "Пользователь, увы, не был создан, проверьте введённые данные");
                 return;
             }
-            await MessageBox.ShowMessageBox("Registration success", "Успешно =)");
+            await MessageBox.ShowMessageBox("Registration is success", "Успешно =)");
+            await root.SetView(StudentViewModel.GetInstance());
         }, canRegister);
 
         ShowLoginCommand = ReactiveCommand.CreateFromTask(async () => { await root.SetView(LoginViewModel.GetInstance(root));});
@@ -65,6 +66,6 @@ public class RegisterViewModel : ViewModelBase
     
     private async void SetData()
     { 
-        NewUser = await UserViewModel.CreateNewUser();
+        NewUser = await User.GetNewBlackUser();
     }
 }

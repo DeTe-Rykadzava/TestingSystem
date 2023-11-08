@@ -27,6 +27,16 @@ public class TestingSystemDbContext : DbContext
     
     public DbSet<Group> Group { get; set; } = null!;
 
+    public DbSet<Test> Test { get; set; } = null!;
+    
+    public DbSet<AskType> AskType { get; set; } = null!;
+    
+    public DbSet<AskAnswer> AskAnswer { get; set; } = null!;
+    
+    public DbSet<TestAsk> TestAsk { get; set; } = null!;
+    
+    public DbSet<TestUser> TestUser { get; set; } = null!;
+
     public TestingSystemDbContext(DbContextOptions<TestingSystemDbContext> options) : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

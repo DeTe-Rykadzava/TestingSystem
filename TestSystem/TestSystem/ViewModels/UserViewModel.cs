@@ -105,48 +105,42 @@ public class UserViewModel : ViewModelBase
         get;
         private set;
     }
-
+    
     private GroupViewModel? _currentGroup = null;
     
+    [Required(ErrorMessage = "Select your group!")]
     public GroupViewModel? CurrentGroup
     {
         get => _currentGroup;
         set => this.RaiseAndSetIfChanged(ref _currentGroup, value);
     }
-
+    
     public ObservableCollection<GroupViewModel> Groups { get; } = new ();
 
-    public UserViewModel(User user)
+    public UserViewModel(User user, bool isNewBlankUser)
     {
         _user = user;
-        Role = Models.Role.GetRoleByName(user.UserRole.RoleName).Result!;
-        _isValid = true;
+        if (isNewBlankUser)
+        {
+            _isValid = false;
+            CanEdit = true;
+            IsNewUser = true;
+            SetData();
+        }
+        else
+        {
+            Role = new RoleViewModel(_user.UserRole);
+            _isValid = true;
+            CurrentGroup = _user.Group == null ? null : new GroupViewModel(_user.Group);
+        }
         this.WhenAnyValue(x => x.FirstName, x => x.SecondName,
-                          x => x.UserLogin, x => x.UserPassword)
-            .Subscribe(s =>
-            {
-                if (string.IsNullOrWhiteSpace(s.Item1) || string.IsNullOrWhiteSpace(s.Item2) ||
-                    string.IsNullOrWhiteSpace(s.Item3) || string.IsNullOrWhiteSpace(s.Item4))
-                {
-                    IsValid = false;
-                }
-            });
-    }
-
-    private UserViewModel()
-    {
-        _isValid = false;
-        _user = new User();
-        CanEdit = true;
-        IsNewUser = true;
-        
-        this.WhenAnyValue(x => x.FirstName, x => x.SecondName,
-                x => x.UserLogin, x => x.UserPassword)
+                x => x.UserLogin, x => x.UserPassword ,
+                x => x.CurrentGroup)
             .Subscribe(s =>
             {
                 if (string.IsNullOrWhiteSpace(s.Item1) || string.IsNullOrWhiteSpace(s.Item2) ||
                     string.IsNullOrWhiteSpace(s.Item3) || string.IsNullOrWhiteSpace(s.Item4) ||
-                    s.Item3 == s.Item4 || s.Item4.Length < 8)
+                    s.Item3 == s.Item4 || s.Item4.Length < 8 || (Role?.RoleName == "Student" && s.Item5 == null))
                 {
                     IsValid = false;
                     return;
@@ -154,8 +148,6 @@ public class UserViewModel : ViewModelBase
 
                 IsValid = true;
             });
-        
-        SetData();
     }
 
     private async void SetData()
@@ -171,12 +163,19 @@ public class UserViewModel : ViewModelBase
 
     private async Task SetRole()
     {
-        Role = (await Models.Role.GetRoleByName("student"))!;
+        Role = (await Models.Role.GetRoleByName("Student"))!;
     }
 
-    public static async Task<UserViewModel> CreateNewUser()
+    public static async Task<UserViewModel> CreateNewUser(User newBlankUser)
     {
-        var vm = new UserViewModel();
+        var vm = new UserViewModel(newBlankUser, true);
         return vm;
+    }
+
+    public void DoRegister(User registeredUser)
+    {
+        _user = registeredUser;
+        CanEdit = false;
+        IsNewUser = false;
     }
 }

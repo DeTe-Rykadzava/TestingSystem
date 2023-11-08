@@ -14,6 +14,8 @@ public class Group
 
     public string GroupName { get; set; } = null!;
     
+    private Group() { }
+    
     public static async Task<IEnumerable<GroupViewModel>> GetGroups()
     {
         if (Locator.GetLocator().GetService<TestingSystemDbContext>() == null)

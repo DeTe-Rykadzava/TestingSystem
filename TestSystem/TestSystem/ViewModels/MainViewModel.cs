@@ -13,7 +13,14 @@ public class MainViewModel : ViewModelBase
         private set => this.RaiseAndSetIfChanged(ref _currentContentViewModel, value);
     }
 
-    public MainViewModel()
+    private static MainViewModel? _instance;
+
+    public static MainViewModel GetInstance()
+    {
+        return _instance ??= new MainViewModel();
+    }
+
+    private MainViewModel()
     {
         _currentContentViewModel = LoginViewModel.GetInstance(this);
     }

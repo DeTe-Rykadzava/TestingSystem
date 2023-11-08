@@ -54,6 +54,22 @@ public class LoginViewModel : ViewModelBase
             }
             await MessageBox.ShowMessageBox("Login success", "Успешно =)");
 
+            switch (user.Role.RoleType)
+            {
+                case RoleType.Admin:
+                    await root.SetView(AdminViewModel.GetInstance());
+                    break;
+                case RoleType.Student:
+                    await root.SetView(StudentViewModel.GetInstance());
+                    break;
+                case RoleType.Teacher:
+                    await root.SetView(TeacherViewModel.GetInstance());
+                    break;
+                default:
+                    await MessageBox.ShowMessageBox("Cannot show your role view", "Не может определить либо вашу роль, либо что вам показать");
+                    break;
+            }
+
         }, canLogin);
 
         RegisterCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -70,8 +86,7 @@ public class LoginViewModel : ViewModelBase
 
     public static LoginViewModel GetInstance(MainViewModel root)
     {
-        if (_instance == null)
-            _instance = new LoginViewModel(root);
+        _instance ??= new LoginViewModel(root);
         _instance.Reset();
         return _instance;
     }

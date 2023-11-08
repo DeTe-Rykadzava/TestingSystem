@@ -10,7 +10,7 @@ public static class MessageBox
     {
         var box = MessageBoxManager
             .GetMessageBoxStandard(title, text,
-                ButtonEnum.YesNo);
+                ButtonEnum.Ok);
 
         var result = await box.ShowAsync();
     }

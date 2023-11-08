@@ -20,66 +20,88 @@
                        FontSize="16"
                        FontWeight="Bold"
             />
-            <StackPanel Grid.Row="1"
-                        Margin="5 20 0 20 "
-                        Spacing="12">
-                <StackPanel>
+            <WrapPanel Grid.Row="1"
+                       Margin="5 20 0 20 "
+                       Orientation="Vertical">
+                <StackPanel Margin="2"
+                            Spacing="2">
                     <TextBlock Text="First name*:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>
                     <TextBox Text="{Binding NewUser.FirstName, FallbackValue='{x:Null}'}"
+                             IsEnabled="{Binding NewUser.CanEdit, FallbackValue=False}"
                              Watermark="Your first name"
                              MinWidth="150"
                              FontSize="12"/>
                 </StackPanel>
-                <StackPanel>
+                <StackPanel Margin="2"
+                            Spacing="2">
                     <TextBlock Text="Second name*:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>
                     <TextBox Text="{Binding NewUser.SecondName, FallbackValue='{x:Null}'}"
+                             IsEnabled="{Binding NewUser.CanEdit, FallbackValue=False}"
                              Watermark="Your second name"
                              MinWidth="150"
                              FontSize="12"/>
                 </StackPanel>
-                <StackPanel>
+                <StackPanel Margin="2"
+                            Spacing="2">
                     <TextBlock Text="Last name:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>
                     <TextBox Text="{Binding NewUser.LastName, FallbackValue='{x:Null}'}"
+                             IsEnabled="{Binding NewUser.CanEdit, FallbackValue=False}"
                              Watermark="Your last name (optional)"
                              MinWidth="150"
                              FontSize="12"/>
                 </StackPanel>
-                <StackPanel>
-                    <TextBlock Text="Group or class:"
+                <StackPanel Margin="2"
+                            Spacing="2">
+                    <TextBlock Text="Group/class*:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>
-                    <ComboBox ItemsSource="{Binding NewUser.LastName, FallbackValue='{x:Null}'}"
+                    <ComboBox ItemsSource="{Binding NewUser.Groups, FallbackValue='{x:Null}'}"
                               SelectedItem="{Binding NewUser.CurrentGroup, FallbackValue='{x:Null}'}"
-                             PlaceholderText="Your class or group"
-                             MinWidth="150"
-                             FontSize="12"/>
+                              IsEnabled="{Binding NewUser.CanEdit, FallbackValue=False}"
+                              MinWidth="150"
+                              FontSize="12">
+                        <ComboBox.DataTemplates>
+                            <DataTemplate x:DataType="vm:GroupViewModel">
+                                <TextBlock Text="{Binding GroupName}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           FontSize="14"
+                                           FontStyle="Italic"/>
+                            </DataTemplate>
+                        </ComboBox.DataTemplates>
+                    </ComboBox>
                 </StackPanel>
-                <StackPanel>
+                <StackPanel Margin="2"
+                            Spacing="2">
                     <TextBlock Text="Login*:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>
                     <TextBox Text="{Binding NewUser.UserLogin, FallbackValue='{x:Null}'}"
+                             IsEnabled="{Binding NewUser.CanEdit, FallbackValue=False}"
                              Watermark="Your login"
                              MinWidth="150"
                              FontSize="12"/>
                 </StackPanel>
-                <StackPanel Spacing="2">
+                <StackPanel Margin="2" 
+                            Spacing="2">
                     <TextBlock Text="Password*:"
                                FontSize="11"
                                HorizontalAlignment="Left"/>
                     <TextBox Text="{Binding NewUser.UserPassword, FallbackValue='{x:Null}'}"
+                             IsEnabled="{Binding NewUser.CanEdit, FallbackValue=False}"
                              Watermark="Your password (8 characters and longer)"
                              MinWidth="150"
                              FontSize="12"/>
                 </StackPanel>
-            </StackPanel>
-            <WrapPanel Grid.Row="2">
+            </WrapPanel>
+            <WrapPanel Grid.Row="2" 
+                       HorizontalAlignment="Center">
                 <Button Classes="Flat"
                         Content="Вход"
                         Margin="0 0 2 0"
