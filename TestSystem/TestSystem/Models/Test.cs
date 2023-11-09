@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Splat;
 using TestSystem.ViewModels;
 
@@ -12,6 +14,11 @@ public class Test
     public User CreatorUser { get; set; } = null!;
     public List<TestAsk> Asks { get; set; } = null!;
 
+    private Test()
+    {
+        
+    }
+    
     private Test(User creatorUser)
     {
         CreatorUser = creatorUser;
@@ -21,7 +28,19 @@ public class Test
     {
         var userId = User.GetCurrentUser().UserId;
         var user = Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefault(x => x.Id == userId)!;
-        return new TestViewModel(new Test(user));
+        return TestViewModel.GetTest(new Test(user), true);
+    }
+
+    public static async Task<List<TestViewModel>> GetAllUserTests()
+    {
+        var userId = User.GetCurrentUser().UserId;
+        var tests = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
+            .Include(i => i.CreatorUser)
+            .Include(i => i.Asks)
+            .Where(x => x.CreatorUser.Id == userId)
+            .Select(s => TestViewModel.GetTest(s, false))
+            .ToListAsync();
+        return tests;
     }
 
 }
