@@ -51,7 +51,8 @@
                         Command="{Binding RegisterCommand}"/>
                 <Button Content="Войти"
                         Margin="2 0 0 0 "
-                        Command="{Binding LoginCommand}"/>
+                        Command="{Binding LoginCommand}"
+                        IsDefault="True"/>
             </WrapPanel>
         </Grid>
     </Border>

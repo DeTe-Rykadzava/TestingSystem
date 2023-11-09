@@ -37,8 +37,9 @@ public class User
     {
         try
         {
-            var user = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefaultAsync(x =>
-                x.Login == login);
+            var user = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User
+                .Include(i => i.UserRole)
+                .FirstOrDefaultAsync(x => x.Login == login);
             if (user == null)
                 return null;
             if (!BCrypt.Net.BCrypt.Verify(password, user.Password))

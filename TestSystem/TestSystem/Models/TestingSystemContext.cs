@@ -42,7 +42,7 @@ public class TestingSystemDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString = Settings.GetConnectionString();
-        Console.WriteLine(connectionString);
+        // Console.WriteLine(connectionString);
         
         optionsBuilder.UseNpgsql(connectionString);
     }
