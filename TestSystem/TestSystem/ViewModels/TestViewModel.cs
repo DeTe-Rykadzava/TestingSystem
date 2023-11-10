@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System;
+using System.Threading.Tasks;
 using DynamicData;
 using ReactiveUI;
 using TestSystem.Models;
@@ -62,6 +63,21 @@ public class TestViewModel : ViewModelBase
         LoadData();
     }
 
+    public void BeginEdit()
+    {
+        IsEdit = true;
+    }
+
+    public void SaveChanges()
+    {
+        IsEdit = false;
+    }
+
+    public void ResetChanges()
+    {
+        
+    }
+
     public static TestViewModel GetTest(Test test, bool isNew = false)
     {
         return new TestViewModel(test){IsEdit = isNew};
@@ -73,5 +89,10 @@ public class TestViewModel : ViewModelBase
             return;
         var testAsks = _test.Asks.Select(s => new TestAskViewModel(s)).ToList();
         Asks.AddRange(testAsks);
+    }
+
+    public static async Task<bool> DeleteTest(TestViewModel test)
+    {
+        return await Test.DeleteTest(test._test);
     }
 }

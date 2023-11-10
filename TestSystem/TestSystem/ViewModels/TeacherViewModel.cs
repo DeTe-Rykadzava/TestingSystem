@@ -1,8 +1,24 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using DynamicData;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 using ReactiveUI;
 using TestSystem.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Reactive.Linq;
+using System.Windows.Input;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
+using ReactiveUI;
+using TestSystem.Core;
+using TestSystem.Models;
+using TestSystem.ViewModels;
+
 
 namespace TestSystem.ViewModels;
 
@@ -32,13 +48,48 @@ public class TeacherViewModel : ViewModelBase
     
     public ObservableCollection<TestViewModel> Tests { get; } = new();
 
-    public Interaction<TestViewModel, TestViewModel?> CreateNewTest { get; }
+    public Interaction<TestViewModel, TestViewModel?> ShowTestInteraction { get; }
+
+    public ICommand CreateTestCommand { get; }
+
+    public ICommand EditTestCommand { get; }
+
+    public ICommand DeleteTestCommand { get; }
 
     private TeacherViewModel()
     {
+        Task.Run(LoadData);
+        ShowTestInteraction = new Interaction<TestViewModel, TestViewModel?>();
         _user = User.GetCurrentUser()!;
-        CreateNewTest = new Interaction<TestViewModel, TestViewModel?>();
-        LoadData();
+        CreateTestCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            var result = await ShowTestInteraction.Handle(Test.CreateNewBlackTest());
+        });
+        var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => Tests,
+                (test, tests) => test != null && tests.Count > 0)
+            .DistinctUntilChanged();
+        EditTestCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            SelectedTest.IsEdit = true;
+            await ShowTestInteraction.Handle(SelectedTest!);
+        }, canEdit);
+        DeleteTestCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            if (await MessageBoxManager.GetMessageBoxStandard("Delete", "Вы уверены?", ButtonEnum.YesNo).ShowAsync() == ButtonResult.No)
+            {
+                return;
+            }
+
+            if (!await TestViewModel.DeleteTest(SelectedTest!))
+            {
+                MessageBox.ShowMessageBox("Error","Не удалось удалить тест");
+                return;
+            }
+
+            Tests.Remove(SelectedTest!);
+            SelectedTest = null;
+
+        }, canEdit);
     }
 
     private async void LoadData()

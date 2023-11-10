@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,21 @@ public class Test
             .Select(s => TestViewModel.GetTest(s, false))
             .ToListAsync();
         return tests;
+    }
+
+    public static async Task<bool> DeleteTest(Test test)
+    {
+        try
+        {
+            Locator.GetLocator().GetService<TestingSystemDbContext>().Test.Remove(test);
+            await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
     }
 
 }
