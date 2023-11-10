@@ -61,18 +61,38 @@ public class TeacherViewModel : ViewModelBase
         Task.Run(LoadData);
         ShowTestInteraction = new Interaction<TestViewModel, TestViewModel?>();
         _user = User.GetCurrentUser()!;
+        
         CreateTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var result = await ShowTestInteraction.Handle(Test.CreateNewBlackTest());
+            if(result == null)
+                return;
+            Tests.Add(result);
+            var success = await TestViewModel.SaveTestInBase(result);
+            if (success)
+            {
+                await MessageBox.ShowMessageBox("Success", "Успешно");
+                return;
+            }
+            await MessageBox.ShowMessageBox("Error", "Не удалось сохранить");
         });
-        var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => Tests,
-                (test, tests) => test != null && tests.Count > 0)
-            .DistinctUntilChanged();
+        
+        // var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => Tests,
+        //         (test, tests) => test != null && tests.Count > 0)
+        //     .DistinctUntilChanged();
+        
         EditTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            SelectedTest.IsEdit = true;
-            await ShowTestInteraction.Handle(SelectedTest!);
-        }, canEdit);
+            SelectedTest!.BeginEdit();
+            var res = await ShowTestInteraction.Handle(SelectedTest!);
+            if (res == null)
+            {
+                SelectedTest.ResetChanges();
+                return;
+            }
+            SelectedTest.SaveChanges();
+        });
+        
         DeleteTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             if (await MessageBoxManager.GetMessageBoxStandard("Delete", "Вы уверены?", ButtonEnum.YesNo).ShowAsync() == ButtonResult.No)
@@ -89,7 +109,7 @@ public class TeacherViewModel : ViewModelBase
             Tests.Remove(SelectedTest!);
             SelectedTest = null;
 
-        }, canEdit);
+        });
     }
 
     private async void LoadData()

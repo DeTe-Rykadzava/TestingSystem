@@ -48,7 +48,8 @@
                             Margin="5">
                     <Button Padding="0"
                             HorizontalContentAlignment="Stretch"
-                            Classes="Flat">
+                            Classes="Flat"
+                            Command="{Binding CreateTestCommand}">
                         <Grid ColumnDefinitions="Auto *"
                               Margin="10 5"
                               HorizontalAlignment="Stretch"

@@ -2,7 +2,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using DynamicData;
 using ReactiveUI;
 using TestSystem.Models;
@@ -11,7 +14,7 @@ namespace TestSystem.ViewModels;
 
 public class TestViewModel : ViewModelBase
 {
-    private readonly Test _test;
+    private Test _test;
 
     private bool _isEdit = false;
 
@@ -20,7 +23,9 @@ public class TestViewModel : ViewModelBase
         get => _isEdit;
         private set => this.RaiseAndSetIfChanged(ref _isEdit, value);
     }
-    
+
+    public string ShortTitle { get; private set; }
+
     [Required(ErrorMessage = "Enter title test!", AllowEmptyStrings = false)]
     public string Title
     {
@@ -30,6 +35,9 @@ public class TestViewModel : ViewModelBase
             if(!IsEdit)
                 return;
             _test.Name = value;
+            ShortTitle = _test.Name.Substring(0, 15);
+            if (_test.Name.Length > ShortTitle.Length)
+                ShortTitle += "...";
             this.RaisePropertyChanged();
         }
     }
@@ -44,11 +52,24 @@ public class TestViewModel : ViewModelBase
         private set => this.RaiseAndSetIfChanged(ref _isValid, value);
     }
     
+    public ReactiveCommand<Unit, TestViewModel> SaveChangesCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> CanselCommand { get; }
+
     public ObservableCollection<TestAskViewModel> Asks { get; } = new();
 
     private TestViewModel(Test test)
     {
         _test = test;
+        Title = "test test";
+        
+        // var canSave = this.WhenAnyValue(x => x.Title, (Title) => !string.IsNullOrWhiteSpace(Title))
+        //     .DistinctUntilChanged();
+        
+        SaveChangesCommand = ReactiveCommand.Create( () => this);
+
+        CanselCommand = ReactiveCommand.Create(() => {  });
+        
         this.WhenAnyValue(x => x.Title)
             .Subscribe(s =>
             {
@@ -73,9 +94,13 @@ public class TestViewModel : ViewModelBase
         IsEdit = false;
     }
 
-    public void ResetChanges()
+    public async void ResetChanges()
     {
-        
+        var defaultTest = await Test.GetTestById(_test.Id);
+        if(defaultTest == null)
+            return;
+        _test = defaultTest._test;
+        this.RaisePropertyChanged();
     }
 
     public static TestViewModel GetTest(Test test, bool isNew = false)
@@ -85,7 +110,7 @@ public class TestViewModel : ViewModelBase
 
     private async void LoadData()
     {
-        if(_test.Asks.Count == 0)
+        if(_test.Asks == null)
             return;
         var testAsks = _test.Asks.Select(s => new TestAskViewModel(s)).ToList();
         Asks.AddRange(testAsks);
@@ -94,5 +119,10 @@ public class TestViewModel : ViewModelBase
     public static async Task<bool> DeleteTest(TestViewModel test)
     {
         return await Test.DeleteTest(test._test);
+    }
+
+    public static async Task<bool> SaveTestInBase(TestViewModel test)
+    {
+        return await Test.SaveNewTest(test._test);
     }
 }

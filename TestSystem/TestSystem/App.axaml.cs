@@ -24,10 +24,12 @@ public partial class App : Application
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            var mainW = new MainWindow
             {
                 DataContext = MainViewModel.GetInstance()
             };
+            desktop.MainWindow = mainW;
+            Locator.GetLocator().Register<MainWindow>(() => mainW);
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
