@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -7,18 +6,19 @@ using DynamicData;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using ReactiveUI;
-using TestSystem.Models;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Reactive.Linq;
-using System.Windows.Input;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
-using ReactiveUI;
 using TestSystem.Core;
 using TestSystem.Models;
-using TestSystem.ViewModels;
-
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using DynamicData;
+using ReactiveUI;
+using TestSystem.Models;
 
 namespace TestSystem.ViewModels;
 
@@ -64,22 +64,20 @@ public class TeacherViewModel : ViewModelBase
         
         CreateTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var result = await ShowTestInteraction.Handle(Test.CreateNewBlackTest());
+            var newTest = await Test.CreateNewBlackTest();
+            newTest.BeginEdit();
+            Tests.Add(newTest);
+            var result = await ShowTestInteraction.Handle(newTest);
             if(result == null)
-                return;
-            Tests.Add(result);
-            var success = await TestViewModel.SaveTestInBase(result);
-            if (success)
+                await newTest.ResetChanges();
+            if (!(await newTest.SaveChanges()))
             {
-                await MessageBox.ShowMessageBox("Success", "Успешно");
-                return;
+                await MessageBox.ShowMessageBox("Error","Не удалось сохранить новые данные, попробуйте отредактировать");
             }
-            await MessageBox.ShowMessageBox("Error", "Не удалось сохранить");
         });
-        
-        // var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => Tests,
-        //         (test, tests) => test != null && tests.Count > 0)
-        //     .DistinctUntilChanged();
+
+        var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => x.Tests, (selectedTest, tests) => selectedTest != null && tests.Any())
+            .DistinctUntilChanged();
         
         EditTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -87,11 +85,12 @@ public class TeacherViewModel : ViewModelBase
             var res = await ShowTestInteraction.Handle(SelectedTest!);
             if (res == null)
             {
-                SelectedTest.ResetChanges();
+                await SelectedTest.ResetChanges();
                 return;
             }
-            SelectedTest.SaveChanges();
-        });
+            
+            SelectedTest = null;
+        }, canEdit);
         
         DeleteTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -102,14 +101,14 @@ public class TeacherViewModel : ViewModelBase
 
             if (!await TestViewModel.DeleteTest(SelectedTest!))
             {
-                MessageBox.ShowMessageBox("Error","Не удалось удалить тест");
+                await MessageBox.ShowMessageBox("Error","Не удалось удалить тест");
                 return;
             }
 
             Tests.Remove(SelectedTest!);
             SelectedTest = null;
 
-        });
+        }, canEdit);
     }
 
     private async void LoadData()

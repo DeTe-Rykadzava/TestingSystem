@@ -68,7 +68,8 @@
                     </Button>
                     <Button Padding="0"
                             HorizontalContentAlignment="Stretch"
-                            Classes="Flat">
+                            Classes="Flat"
+                            Command="{Binding EditTestCommand}">
                         <Grid ColumnDefinitions="Auto *"
                               Margin="10 5"
                               HorizontalAlignment="Stretch"
@@ -87,7 +88,8 @@
                     </Button>
                     <Button Padding="0"
                             HorizontalContentAlignment="Stretch"
-                            Classes="Flat">
+                            Classes="Flat"
+                            Command="{Binding DeleteTestCommand}">
                         <Grid ColumnDefinitions="Auto *"
                               Margin="10 5"
                               HorizontalAlignment="Stretch"
@@ -131,7 +133,7 @@
                                         BorderThickness="1"
                                         CornerRadius="8"
                                         Padding="20">
-                                    <TextBlock Text="test"/>
+                                    <TextBlock Text="{Binding ShortTitle}"/>
                                 </Border>
                             </DataTemplate>
                         </ListBox.DataTemplates>

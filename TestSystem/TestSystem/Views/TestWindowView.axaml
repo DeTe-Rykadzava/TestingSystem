@@ -3,12 +3,88 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:TestSystem.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" Width="800" Height="600"
+        MinWidth="800" MinHeight="600"
         x:Class="TestSystem.Views.TestWindowView"
         x:DataType="vm:TestViewModel"
         Title="{Binding ShortTitle}">
-        <Button Content="test save"
-                Command="{Binding SaveChangesCommand}"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"/>
+    
+    <Grid RowDefinitions="Auto *" 
+          Margin="20">
+        <Border Grid.Row="0"
+                Background="Gray"
+                BorderBrush="DarkGray"
+                BorderThickness="2"
+                CornerRadius="8"
+                Padding="20"
+                HorizontalAlignment="Stretch">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Test title*"
+                           FontSize="12"/>
+                <TextBox Text="{Binding Title}"
+                         Watermark="Test title (required)"
+                         FontSize="16"
+                         FontStyle="Italic"
+                         IsEnabled="{Binding IsEdit}"/>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="1"
+              RowDefinitions="* Auto"
+              Margin="20">
+            <ListBox Grid.Row="0">
+                <ListBox.Items>
+                    <ListBoxItem >
+                        <Border  Background="Gray"
+                                 BorderBrush="DarkGray"
+                                 BorderThickness="2"
+                                 CornerRadius="8"
+                                 Padding="20"
+                                 HorizontalAlignment="Stretch">
+                            <TextBlock Text="Test num 1"/>
+                        </Border>
+                    </ListBoxItem>
+                    <ListBoxItem >
+                        <Border  Background="Gray"
+                                 BorderBrush="DarkGray"
+                                 BorderThickness="2"
+                                 CornerRadius="8"
+                                 Padding="20"
+                                 HorizontalAlignment="Stretch">
+                            <TextBlock Text="Test num 1"/>
+                        </Border>
+                    </ListBoxItem>
+                    <ListBoxItem >
+                        <Border  Background="Gray"
+                                 BorderBrush="DarkGray"
+                                 BorderThickness="2"
+                                 CornerRadius="8"
+                                 Padding="20"
+                                 HorizontalAlignment="Stretch">
+                            <TextBlock Text="Test num 1"/>
+                        </Border>
+                    </ListBoxItem>
+                </ListBox.Items>
+            </ListBox>
+            <Panel Grid.Row="1"
+                   Margin="20">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="20"
+                            HorizontalAlignment="Right">
+                    <Button Content="Add ask"
+                            Classes="Flat"
+                            Padding="20 10"
+                            Command="{Binding AddNewAskCommand}"/>
+                    <Button Content="Cansel"
+                            Classes="Flat"
+                            Padding="20 10"
+                            Command="{Binding CanselCommand}"/>
+                    <Button Content="Save"
+                            Padding="20 10"
+                            Command="{Binding SaveChangesCommand}"/>
+                </StackPanel>
+            </Panel>
+        </Grid>
+    </Grid>
+    
+    
 </Window>

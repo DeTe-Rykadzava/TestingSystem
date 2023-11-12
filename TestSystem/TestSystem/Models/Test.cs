@@ -25,11 +25,21 @@ public class Test
         CreatorUser = creatorUser;
     }
 
-    public static async Task<bool> SaveNewTest(Test test)
+    public static async Task<TestViewModel> CreateNewBlackTest()
+    {
+        var userId = User.GetCurrentUser()!.UserId;
+        var user = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefaultAsync(x => x.Id == userId)!;
+        var newTest = new Test(user!);
+        newTest.Name = $"new Test {DateTime.Now}";
+        await Locator.GetLocator().GetService<TestingSystemDbContext>()!.Test.AddAsync(newTest);
+        await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
+        return TestViewModel.GetTest(newTest, true);
+    }
+
+    public async Task<bool> SaveChanges()
     {
         try
         {
-            await Locator.GetLocator().GetService<TestingSystemDbContext>().Test.AddAsync(test);
             await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
             return true;
         }
@@ -38,13 +48,6 @@ public class Test
             Console.WriteLine(e);
             return false;
         }
-    }
-
-    public static TestViewModel CreateNewBlackTest()
-    {
-        var userId = User.GetCurrentUser().UserId;
-        var user = Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefault(x => x.Id == userId)!;
-        return TestViewModel.GetTest(new Test(user), true);
     }
 
     public static async Task<TestViewModel?> GetTestById(int testId)
@@ -60,12 +63,13 @@ public class Test
     public static async Task<List<TestViewModel>> GetAllUserTests()
     {
         var userId = User.GetCurrentUser().UserId;
-        var tests = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
+        var tests = Locator.GetLocator().GetService<TestingSystemDbContext>().Test
             .Include(i => i.CreatorUser)
             .Include(i => i.Asks)
             .Where(x => x.CreatorUser.Id == userId)
-            .Select(s => TestViewModel.GetTest(s, false))
-            .ToListAsync();
+            .AsEnumerable()
+            .Select( s => TestViewModel.GetTest(s, false))
+            .ToList();
         return tests;
     }
 

@@ -35,7 +35,10 @@ public class TestViewModel : ViewModelBase
             if(!IsEdit)
                 return;
             _test.Name = value;
-            ShortTitle = _test.Name.Substring(0, 15);
+            if (_test.Name.Length > 15)
+                ShortTitle = _test.Name.Substring(0, 15);
+            else
+                ShortTitle = _test.Name;
             if (_test.Name.Length > ShortTitle.Length)
                 ShortTitle += "...";
             this.RaisePropertyChanged();
@@ -51,7 +54,9 @@ public class TestViewModel : ViewModelBase
         get => _isValid;
         private set => this.RaiseAndSetIfChanged(ref _isValid, value);
     }
-    
+
+    public ICommand AddNewAskCommand { get; }
+
     public ReactiveCommand<Unit, TestViewModel> SaveChangesCommand { get; }
 
     public ReactiveCommand<Unit, Unit> CanselCommand { get; }
@@ -61,14 +66,22 @@ public class TestViewModel : ViewModelBase
     private TestViewModel(Test test)
     {
         _test = test;
-        Title = "test test";
         
-        // var canSave = this.WhenAnyValue(x => x.Title, (Title) => !string.IsNullOrWhiteSpace(Title))
-        //     .DistinctUntilChanged();
+        if (_test.Name.Length > 45)
+            ShortTitle = _test.Name.Substring(0, 45);
+        else
+            ShortTitle = _test.Name;
+        if (_test.Name.Length > ShortTitle.Length)
+            ShortTitle += "...";
         
-        SaveChangesCommand = ReactiveCommand.Create( () => this);
+        var canSave = this.WhenAnyValue(x => x.Title, (title) => !string.IsNullOrWhiteSpace(title))
+            .DistinctUntilChanged();
+        
+        SaveChangesCommand = ReactiveCommand.Create( () => this, canSave);
 
         CanselCommand = ReactiveCommand.Create(() => {  });
+
+        AddNewAskCommand = ReactiveCommand.CreateFromTask(async () => { Asks.Add(await TestAsk.CreateNewTestAsk(_test)); });
         
         this.WhenAnyValue(x => x.Title)
             .Subscribe(s =>
@@ -81,7 +94,6 @@ public class TestViewModel : ViewModelBase
 
                 IsValid = true;
             });
-        LoadData();
     }
 
     public void BeginEdit()
@@ -89,12 +101,13 @@ public class TestViewModel : ViewModelBase
         IsEdit = true;
     }
 
-    public void SaveChanges()
+    public async Task<bool> SaveChanges()
     {
         IsEdit = false;
+        return await _test.SaveChanges();
     }
 
-    public async void ResetChanges()
+    public async Task ResetChanges()
     {
         var defaultTest = await Test.GetTestById(_test.Id);
         if(defaultTest == null)
@@ -105,6 +118,9 @@ public class TestViewModel : ViewModelBase
 
     public static TestViewModel GetTest(Test test, bool isNew = false)
     {
+        var vm = new TestViewModel(test) { IsEdit = isNew };
+        if(!isNew)
+            vm.LoadData();
         return new TestViewModel(test){IsEdit = isNew};
     }
 
@@ -112,17 +128,12 @@ public class TestViewModel : ViewModelBase
     {
         if(_test.Asks == null)
             return;
-        var testAsks = _test.Asks.Select(s => new TestAskViewModel(s)).ToList();
+        var testAsks = _test.Asks.Select(s => TestAskViewModel.GetTestAsk(s)).ToList();
         Asks.AddRange(testAsks);
     }
 
     public static async Task<bool> DeleteTest(TestViewModel test)
     {
         return await Test.DeleteTest(test._test);
-    }
-
-    public static async Task<bool> SaveTestInBase(TestViewModel test)
-    {
-        return await Test.SaveNewTest(test._test);
     }
 }
