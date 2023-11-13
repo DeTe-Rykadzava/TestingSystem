@@ -88,6 +88,11 @@ public class TeacherViewModel : ViewModelBase
                 await SelectedTest.ResetChanges();
                 return;
             }
+            else
+            {
+                SelectedTest.EndEdit();
+                await res.SaveChanges();
+            }
             
             SelectedTest = null;
         }, canEdit);

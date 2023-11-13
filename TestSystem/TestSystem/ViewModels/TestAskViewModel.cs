@@ -24,7 +24,15 @@ public class TestAskViewModel : ViewModelBase
             this.RaisePropertyChanged();
         }
     }
-    
+
+    private int _askNumber = 0;
+
+    public int AskNumber
+    {
+        get => _askNumber;
+        set => this.RaiseAndSetIfChanged(ref _askNumber, value);
+    }
+
     private bool _isEdit = false;
 
     public bool IsEdit
@@ -51,7 +59,17 @@ public class TestAskViewModel : ViewModelBase
             this.RaisePropertyChanged();
         }
     }
+
+    public void BeginEdit()
+    {
+        IsEdit = true;
+    }
     
+    public void EndEdit()
+    {
+        IsEdit = false;
+    }
+
     private TestAskViewModel(TestAsk ask)
     {
         _ask = ask;
@@ -60,21 +78,18 @@ public class TestAskViewModel : ViewModelBase
     public static TestAskViewModel GetTestAsk(TestAsk ask, bool isNew = false)
     {
         var vm = new TestAskViewModel(ask) { IsEdit = isNew };
-        if(!isNew)
-            vm.LoadData();
-        return new TestAskViewModel(ask){IsEdit = isNew};
+        vm.LoadData();
+        return vm;
     }
     
     private async void LoadData()
     {
-        if(_ask.Answers == null)
-            return;
-        var testAsks = _ask.Answers.Select(s => AskAnswerViewModel.GetAnswer(s)).ToList();
+        var testAsks = _ask.GetAskAnswers();
         Answers.AddRange(testAsks);
     }
     
     public static async Task<bool> DeleteTestAsk(TestAskViewModel ask)
     {
-        return await TestAsk.DeleteTest(ask._ask);
+        return await TestAsk.DeleteAsk(ask._ask);
     }
 }

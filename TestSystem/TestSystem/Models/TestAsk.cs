@@ -22,6 +22,14 @@ public class TestAsk
         
     }
 
+    public List<AskAnswerViewModel> GetAskAnswers()
+    {
+        if (Answers == null)
+            return new List<AskAnswerViewModel>();
+        var answers = Answers.Select(s => AskAnswerViewModel.GetAnswer(s)).ToList();
+        return answers;
+    }
+    
     public async void SetRightAnswer(int rightAnswerId)
     {
         var answer = await Locator.GetLocator().GetService<TestingSystemDbContext>().AskAnswer
@@ -63,36 +71,8 @@ public class TestAsk
             return false;
         }
     }
-
-    public static async Task<bool> DeleteTest(Test test)
-    {
-        try
-        {
-            Locator.GetLocator().GetService<TestingSystemDbContext>().Test.Remove(test);
-            await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
-            return true;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
-        }
-    }
     
-    public static async Task<List<TestViewModel>> GetAnswersTests()
-    {
-        var userId = User.GetCurrentUser().UserId;
-        var tests = Locator.GetLocator().GetService<TestingSystemDbContext>().Test
-            .Include(i => i.CreatorUser)
-            .Include(i => i.Asks)
-            .Where(x => x.CreatorUser.Id == userId)
-            .AsEnumerable()
-            .Select( s => TestViewModel.GetTest(s, false))
-            .ToList();
-        return tests;
-    }
-    
-    public static async Task<bool> DeleteTest(TestAsk ask)
+    public static async Task<bool> DeleteAsk(TestAsk ask)
     {
         try
         {

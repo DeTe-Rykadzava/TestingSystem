@@ -25,6 +25,15 @@ public class Test
         CreatorUser = creatorUser;
     }
 
+    
+    public List<TestAskViewModel> GetTestAsks()
+    {
+        if (Asks == null)
+            return new List<TestAskViewModel>();
+        var asks = Asks.Select(s => TestAskViewModel.GetTestAsk(s)).ToList();
+        return asks;
+    }
+    
     public static async Task<TestViewModel> CreateNewBlackTest()
     {
         var userId = User.GetCurrentUser()!.UserId;
@@ -50,6 +59,12 @@ public class Test
         }
     }
 
+    public void ResetChanges()
+    {
+        var originalEntity = (Test)Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).OriginalValues.ToObject();
+        this.Name = originalEntity.Name;
+    }
+
     public static async Task<TestViewModel?> GetTestById(int testId)
     {
         var userId = User.GetCurrentUser().UserId;
@@ -63,14 +78,14 @@ public class Test
     public static async Task<List<TestViewModel>> GetAllUserTests()
     {
         var userId = User.GetCurrentUser().UserId;
-        var tests = Locator.GetLocator().GetService<TestingSystemDbContext>().Test
+        var tests = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
             .Include(i => i.CreatorUser)
             .Include(i => i.Asks)
             .Where(x => x.CreatorUser.Id == userId)
-            .AsEnumerable()
-            .Select( s => TestViewModel.GetTest(s, false))
-            .ToList();
-        return tests;
+            .ToListAsync();
+        var valTests = tests.Select(s => TestViewModel.GetTest(s)).ToList();
+        // .Select( s => TestViewModel.GetTest(s, false))
+        return valTests;
     }
 
     public static async Task<bool> DeleteTest(Test test)

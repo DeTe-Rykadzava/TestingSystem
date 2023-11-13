@@ -23,8 +23,14 @@ public class TestViewModel : ViewModelBase
         get => _isEdit;
         private set => this.RaiseAndSetIfChanged(ref _isEdit, value);
     }
-
-    public string ShortTitle { get; private set; }
+    
+    private string _shortTitle = "";
+    
+    public string ShortTitle
+    {
+        get => _shortTitle;
+        private set => this.RaiseAndSetIfChanged(ref _shortTitle, value);
+    }
 
     [Required(ErrorMessage = "Enter title test!", AllowEmptyStrings = false)]
     public string Title
@@ -35,12 +41,7 @@ public class TestViewModel : ViewModelBase
             if(!IsEdit)
                 return;
             _test.Name = value;
-            if (_test.Name.Length > 15)
-                ShortTitle = _test.Name.Substring(0, 15);
-            else
-                ShortTitle = _test.Name;
-            if (_test.Name.Length > ShortTitle.Length)
-                ShortTitle += "...";
+            SetShortTitle();
             this.RaisePropertyChanged();
         }
     }
@@ -67,12 +68,7 @@ public class TestViewModel : ViewModelBase
     {
         _test = test;
         
-        if (_test.Name.Length > 45)
-            ShortTitle = _test.Name.Substring(0, 45);
-        else
-            ShortTitle = _test.Name;
-        if (_test.Name.Length > ShortTitle.Length)
-            ShortTitle += "...";
+        SetShortTitle();
         
         var canSave = this.WhenAnyValue(x => x.Title, (title) => !string.IsNullOrWhiteSpace(title))
             .DistinctUntilChanged();
@@ -99,6 +95,19 @@ public class TestViewModel : ViewModelBase
     public void BeginEdit()
     {
         IsEdit = true;
+        foreach (var ask in Asks)
+        {
+            ask.BeginEdit();
+        }
+    }
+
+    public void EndEdit()
+    {
+        IsEdit = false;
+        foreach (var ask in Asks)
+        {
+            ask.EndEdit();
+        }
     }
 
     public async Task<bool> SaveChanges()
@@ -109,27 +118,39 @@ public class TestViewModel : ViewModelBase
 
     public async Task ResetChanges()
     {
-        var defaultTest = await Test.GetTestById(_test.Id);
-        if(defaultTest == null)
-            return;
-        _test = defaultTest._test;
+        _test.ResetChanges();
+        SetShortTitle();
         this.RaisePropertyChanged();
+    }
+
+    private void SetShortTitle()
+    {
+        if (_test.Name.Length > 50)
+            ShortTitle = _test.Name.Substring(0, 50);
+        else
+            ShortTitle = _test.Name;
+        if (_test.Name.Length > ShortTitle.Length)
+            ShortTitle += "...";
     }
 
     public static TestViewModel GetTest(Test test, bool isNew = false)
     {
         var vm = new TestViewModel(test) { IsEdit = isNew };
-        if(!isNew)
-            vm.LoadData();
-        return new TestViewModel(test){IsEdit = isNew};
+        vm.LoadData();
+        return vm;
     }
 
-    private async void LoadData()
+    private void LoadData()
     {
-        if(_test.Asks == null)
-            return;
-        var testAsks = _test.Asks.Select(s => TestAskViewModel.GetTestAsk(s)).ToList();
+        var testAsks = _test.GetTestAsks();
         Asks.AddRange(testAsks);
+        // setting ask number
+        Task.Run(() => {
+            foreach (var ask in Asks)
+            {
+                ask.AskNumber = Asks.IndexOf(ask) + 1;
+            }
+        });
     }
 
     public static async Task<bool> DeleteTest(TestViewModel test)
