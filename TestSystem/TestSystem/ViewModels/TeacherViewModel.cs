@@ -38,17 +38,17 @@ public class TeacherViewModel : ViewModelBase
         return _instance ??= new TeacherViewModel();
     }
 
-    private TestViewModel? _selectedTest = null;
-
-    public TestViewModel? SelectedTest
-    {
-        get => _selectedTest;
-        set => this.RaiseAndSetIfChanged(ref _selectedTest, value);
-    }
-    
-    public ObservableCollection<TestViewModel> Tests { get; } = new();
-
-    public Interaction<TestViewModel, TestViewModel?> ShowTestInteraction { get; }
+    // private TestViewModel? _selectedTest = null;
+    //
+    // public TestViewModel? SelectedTest
+    // {
+    //     get => _selectedTest;
+    //     set => this.RaiseAndSetIfChanged(ref _selectedTest, value);
+    // }
+    //
+    // public ObservableCollection<TestViewModel> Tests { get; } = new();
+    //
+    // public Interaction<TestViewModel, TestViewModel?> ShowTestInteraction { get; }
 
     public ICommand CreateTestCommand { get; }
 
@@ -58,67 +58,67 @@ public class TeacherViewModel : ViewModelBase
 
     private TeacherViewModel()
     {
-        Task.Run(LoadData);
-        ShowTestInteraction = new Interaction<TestViewModel, TestViewModel?>();
+        // Task.Run(LoadData);
+        // ShowTestInteraction = new Interaction<TestViewModel, TestViewModel?>();
         _user = User.GetCurrentUser()!;
         
         CreateTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            var newTest = await Test.CreateNewBlackTest();
-            newTest.BeginEdit();
-            Tests.Add(newTest);
-            var result = await ShowTestInteraction.Handle(newTest);
-            if(result == null)
-                await newTest.ResetChanges();
-            if (!(await newTest.SaveChanges()))
-            {
-                await MessageBox.ShowMessageBox("Error","Не удалось сохранить новые данные, попробуйте отредактировать");
-            }
+        //     var newTest = await Test.CreateNewBlackTest();
+        //     newTest.BeginEdit();
+        //     Tests.Add(newTest);
+        //     var result = await ShowTestInteraction.Handle(newTest);
+        //     if(result == null)
+        //         await newTest.ResetChanges();
+        //     if (!(await newTest.SaveChanges()))
+        //     {
+        //         await MessageBox.ShowMessageBox("Error","Не удалось сохранить новые данные, попробуйте отредактировать");
+        //     }
         });
 
-        var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => x.Tests, (selectedTest, tests) => selectedTest != null && tests.Any())
-            .DistinctUntilChanged();
+        // var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => x.Tests, (selectedTest, tests) => selectedTest != null && tests.Any())
+        //     .DistinctUntilChanged();
         
         EditTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            SelectedTest!.BeginEdit();
-            var res = await ShowTestInteraction.Handle(SelectedTest!);
-            if (res == null)
-            {
-                await SelectedTest.ResetChanges();
-                return;
-            }
-            else
-            {
-                SelectedTest.EndEdit();
-                await res.SaveChanges();
-            }
-            
-            SelectedTest = null;
-        }, canEdit);
+            // SelectedTest!.BeginEdit();
+            // var res = await ShowTestInteraction.Handle(SelectedTest!);
+            // if (res == null)
+            // {
+            //     await SelectedTest.ResetChanges();
+            //     return;
+            // }
+            // else
+            // {
+            //     SelectedTest.EndEdit();
+            //     await res.SaveChanges();
+            // }
+            //
+            // SelectedTest = null;
+        });
         
         DeleteTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            if (await MessageBoxManager.GetMessageBoxStandard("Delete", "Вы уверены?", ButtonEnum.YesNo).ShowAsync() == ButtonResult.No)
-            {
-                return;
-            }
+            // if (await MessageBoxManager.GetMessageBoxStandard("Delete", "Вы уверены?", ButtonEnum.YesNo).ShowAsync() == ButtonResult.No)
+            // {
+            //     return;
+            // }
+            //
+            // if (!await TestViewModel.DeleteTest(SelectedTest!))
+            // {
+            //     await MessageBox.ShowMessageBox("Error","Не удалось удалить тест");
+            //     return;
+            // }
+            //
+            // Tests.Remove(SelectedTest!);
+            // SelectedTest = null;
 
-            if (!await TestViewModel.DeleteTest(SelectedTest!))
-            {
-                await MessageBox.ShowMessageBox("Error","Не удалось удалить тест");
-                return;
-            }
-
-            Tests.Remove(SelectedTest!);
-            SelectedTest = null;
-
-        }, canEdit);
+        });
     }
 
-    private async void LoadData()
-    {
-        var tests = await Test.GetAllUserTests();
-        Tests.AddRange(tests);
-    }
+    // private async void LoadData()
+    // {
+    //     var tests = await Test.GetAllUserTests();
+    //     Tests.AddRange(tests);
+    // }
 }

@@ -14,15 +14,6 @@ public partial class TeacherView : ReactiveUserControl<TeacherViewModel>
     public TeacherView()
     {
         InitializeComponent();
-        this.WhenActivated((d) => ViewModel!.ShowTestInteraction.RegisterHandler(ShowTestWindowHandler));
     }
-
-    private async Task ShowTestWindowHandler(InteractionContext<TestViewModel, TestViewModel?> obj)
-    {
-        var dialog = new TeacherTestWindowView() { DataContext = obj.Input };
-        var mainW = Locator.GetLocator().GetService<MainWindow>();
-        
-        var result = await dialog.ShowDialog<TestViewModel?>(mainW);
-        obj.SetOutput(result);
-    }
+    
 }

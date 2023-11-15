@@ -29,11 +29,11 @@ public class TestingSystemDbContext : DbContext
 
     public DbSet<Test> Test { get; set; } = null!;
     
-    public DbSet<AskType> AskType { get; set; } = null!;
+    public DbSet<QueryType> QueryType { get; set; } = null!;
     
-    public DbSet<AskAnswer> AskAnswer { get; set; } = null!;
+    public DbSet<QueryAnswer> QueryAnswer { get; set; } = null!;
     
-    public DbSet<TestAsk> TestAsk { get; set; } = null!;
+    public DbSet<QueryTest> QueryTest { get; set; } = null!;
     
     public DbSet<TestUser> TestUser { get; set; } = null!;
 

@@ -41,4 +41,11 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\OpenErrorWindow.axaml.cs">
+	    <DependentUpon>OpenErrorWindow.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
 </Project>

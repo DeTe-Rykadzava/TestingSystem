@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Splat;
+using TestSystem.Core;
 using TestSystem.Models;
 using TestSystem.ViewModels;
 using TestSystem.Views;
@@ -18,27 +19,50 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        TestingSystemDbContext.Instance.Database.EnsureCreated();
-        // DI
-        Locator.GetLocator().Register<TestingSystemDbContext>(() => TestingSystemDbContext.Instance);
-        
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        bool successConDatabase = false;
+        try
         {
-            var mainW = new MainWindow
-            {
-                DataContext = MainViewModel.GetInstance()
-            };
-            desktop.MainWindow = mainW;
-            Locator.GetLocator().Register<MainWindow>(() => mainW);
+            TestingSystemDbContext.Instance.Database.EnsureCreated();
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+        catch (Exception e)
         {
-            singleViewPlatform.MainView = new MainView
+            Console.WriteLine(e);
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime errorDesktop)
             {
-                DataContext = MainViewModel.GetInstance()
-            };
+                errorDesktop.MainWindow = new OpenErrorWindow
+                {
+                    DataContext = OpenErrorViewModel.GetInstance()
+                };
+            }
+            else if(ApplicationLifetime is ISingleViewApplicationLifetime errorSingleView)
+            {
+                errorSingleView.MainView = new OpenErrorView
+                {
+                    DataContext = OpenErrorViewModel.GetInstance()
+                };
+            }
         }
 
+        if (successConDatabase)
+        {
+            // DI
+            Locator.GetLocator().Register<TestingSystemDbContext>(() => TestingSystemDbContext.Instance);
+        
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow = new MainWindow
+                {
+                    DataContext = MainViewModel.GetInstance()
+                };
+            }
+            else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+            {
+                singleViewPlatform.MainView = new MainView
+                {
+                    DataContext = MainViewModel.GetInstance()
+                };
+            }
+        }
         base.OnFrameworkInitializationCompleted();
     }
 }
