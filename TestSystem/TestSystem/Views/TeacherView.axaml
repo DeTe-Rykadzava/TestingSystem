@@ -123,20 +123,20 @@
                                FontStyle="Italic"
                                FontWeight="Bold"
                                TextDecorations="Underline"/>
-                             <!-- ItemsSource="{Binding Tests}" -->
-                             <!-- SelectedItem="{Binding SelectedTest}"> -->
                     <ListBox Grid.Row="1"
-                             Margin="20">
-                        <!-- <ListBox.DataTemplates> -->
-                        <!--     <DataTemplate x:DataType="vm:TestViewModel"> -->
-                        <!--         <Border BorderBrush="DarkGray" -->
-                        <!--                 BorderThickness="1" -->
-                        <!--                 CornerRadius="8" -->
-                        <!--                 Padding="20"> -->
-                        <!--             <TextBlock Text="{Binding ShortTitle}"/> -->
-                        <!--         </Border> -->
-                        <!--     </DataTemplate> -->
-                        <!-- </ListBox.DataTemplates> -->
+                             Margin="20"
+                             ItemsSource="{Binding Tests}"
+                             SelectedItem="{Binding SelectedTest}">
+                        <ListBox.DataTemplates>
+                            <DataTemplate x:DataType="vm:TeacherTestViewModel">
+                                <Border BorderBrush="DarkGray"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="20">
+                                    <TextBlock Text="{Binding ShortTitle}"/>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.DataTemplates>
                         <ListBox.Items>
                             <ListBoxItem Padding="0"
                                          Margin="2">

@@ -38,18 +38,24 @@ public class TeacherViewModel : ViewModelBase
         return _instance ??= new TeacherViewModel();
     }
 
-    // private TestViewModel? _selectedTest = null;
-    //
-    // public TestViewModel? SelectedTest
-    // {
-    //     get => _selectedTest;
-    //     set => this.RaiseAndSetIfChanged(ref _selectedTest, value);
-    // }
-    //
-    // public ObservableCollection<TestViewModel> Tests { get; } = new();
-    //
-    // public Interaction<TestViewModel, TestViewModel?> ShowTestInteraction { get; }
+    private ViewModelBase? _testVm = null;
 
+    public ViewModelBase? TestVm
+    {
+        get => _testVm;
+        set => this.RaiseAndSetIfChanged(ref _testVm, value);
+    }
+
+    private TeacherTestViewModel? _selectedTest = null;
+    
+    public TeacherTestViewModel? SelectedTest
+    {
+        get => _selectedTest;
+        set => this.RaiseAndSetIfChanged(ref _selectedTest, value);
+    }
+    
+    public ObservableCollection<TeacherTestViewModel> Tests { get; } = new();
+    
     public ICommand CreateTestCommand { get; }
 
     public ICommand EditTestCommand { get; }
@@ -58,8 +64,7 @@ public class TeacherViewModel : ViewModelBase
 
     private TeacherViewModel()
     {
-        // Task.Run(LoadData);
-        // ShowTestInteraction = new Interaction<TestViewModel, TestViewModel?>();
+        Task.Run(LoadData);
         _user = User.GetCurrentUser()!;
         
         CreateTestCommand = ReactiveCommand.CreateFromTask(async () =>
@@ -116,9 +121,9 @@ public class TeacherViewModel : ViewModelBase
         });
     }
 
-    // private async void LoadData()
-    // {
-    //     var tests = await Test.GetAllUserTests();
-    //     Tests.AddRange(tests);
-    // }
+    private async void LoadData()
+    {
+        var tests = await Test.GetAllUserTests();
+        Tests.AddRange(tests);
+    }
 }

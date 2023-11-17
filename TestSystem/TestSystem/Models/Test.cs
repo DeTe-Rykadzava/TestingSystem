@@ -24,7 +24,6 @@ public class Test
     {
         CreatorUser = creatorUser;
     }
-
     
     // public List<TestAskViewModel> GetTestAsks()
     // {
@@ -34,16 +33,27 @@ public class Test
     //     return asks;
     // }
     //
-    // public static async Task<TestViewModel> CreateNewBlackTest()
-    // {
-    //     var userId = User.GetCurrentUser()!.UserId;
-    //     var user = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefaultAsync(x => x.Id == userId)!;
-    //     var newTest = new Test(user!);
-    //     newTest.Name = $"new Test {DateTime.Now}";
-    //     await Locator.GetLocator().GetService<TestingSystemDbContext>()!.Test.AddAsync(newTest);
-    //     await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
-    //     return TestViewModel.GetTest(newTest, true);
-    // }
+    public static async Task<List<TeacherTestViewModel>> GetAllUserTests()
+    {
+        var userId = User.GetCurrentUser().UserId;
+        var tests = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
+            .Include(i => i.CreatorUser)
+            .Include(i => i.Asks)
+            .Where(x => x.CreatorUser.Id == userId)
+            .ToListAsync();
+        var valTests = tests.Select(s => new TeacherTestViewModel(s)).ToList();
+        return valTests;
+    }
+    public static async Task<TeacherTestViewModel> CreateNewBlackTest()
+    {
+        var userId = User.GetCurrentUser()!.UserId;
+        var user = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefaultAsync(x => x.Id == userId)!;
+        var newTest = new Test(user!);
+        newTest.Name = $"New test {DateTime.Now}";
+        await Locator.GetLocator().GetService<TestingSystemDbContext>()!.Test.AddAsync(newTest);
+        await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
+        return new TeacherTestViewModel(newTest);
+    }
     //
     // public async Task<bool> SaveChanges()
     // {
@@ -75,18 +85,6 @@ public class Test
     //     return test == null ? null : TestViewModel.GetTest(test, false);
     // }
     //
-    // public static async Task<List<TestViewModel>> GetAllUserTests()
-    // {
-    //     var userId = User.GetCurrentUser().UserId;
-    //     var tests = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
-    //         .Include(i => i.CreatorUser)
-    //         .Include(i => i.Asks)
-    //         .Where(x => x.CreatorUser.Id == userId)
-    //         .ToListAsync();
-    //     var valTests = tests.Select(s => TestViewModel.GetTest(s)).ToList();
-    //     // .Select( s => TestViewModel.GetTest(s, false))
-    //     return valTests;
-    // }
     //
     // public static async Task<bool> DeleteTest(Test test)
     // {
