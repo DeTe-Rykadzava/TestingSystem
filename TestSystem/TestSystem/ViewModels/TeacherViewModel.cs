@@ -69,20 +69,17 @@ public class TeacherViewModel : ViewModelBase
         
         CreateTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-        //     var newTest = await Test.CreateNewBlackTest();
-        //     newTest.BeginEdit();
-        //     Tests.Add(newTest);
-        //     var result = await ShowTestInteraction.Handle(newTest);
-        //     if(result == null)
-        //         await newTest.ResetChanges();
-        //     if (!(await newTest.SaveChanges()))
-        //     {
-        //         await MessageBox.ShowMessageBox("Error","Не удалось сохранить новые данные, попробуйте отредактировать");
-        //     }
+            var newTest = await Test.CreateNewBlackTest();
+            Tests.Add(newTest);
+            await newTest.ResetChanges();
+        if (!(await newTest.SaveChanges()))
+        {
+        await MessageBox.ShowMessageBox("Error","Не удалось сохранить новые данные, попробуйте отредактировать");
+        }
         });
 
-        // var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => x.Tests, (selectedTest, tests) => selectedTest != null && tests.Any())
-        //     .DistinctUntilChanged();
+        var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => x.Tests, (selectedTest, tests) => selectedTest != null && tests.Any())
+            .DistinctUntilChanged();
         
         EditTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
@@ -100,25 +97,25 @@ public class TeacherViewModel : ViewModelBase
             // }
             //
             // SelectedTest = null;
-        });
+        }, canEdit);
         
         DeleteTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            // if (await MessageBoxManager.GetMessageBoxStandard("Delete", "Вы уверены?", ButtonEnum.YesNo).ShowAsync() == ButtonResult.No)
-            // {
-            //     return;
-            // }
-            //
-            // if (!await TestViewModel.DeleteTest(SelectedTest!))
-            // {
-            //     await MessageBox.ShowMessageBox("Error","Не удалось удалить тест");
-            //     return;
-            // }
-            //
-            // Tests.Remove(SelectedTest!);
-            // SelectedTest = null;
-
-        });
+            if (await MessageBoxManager.GetMessageBoxStandard("Delete", "Вы уверены?", ButtonEnum.YesNo).ShowAsync() == ButtonResult.No)
+            {
+                return;
+            }
+            
+            if (!await SelectedTest!.DeleteTest())
+            {
+                SelectedTest.CanselDeleteTest();
+                await MessageBox.ShowMessageBox("Error","Не удалось удалить тест");
+                return;
+            }
+            
+            Tests.Remove(SelectedTest!);
+            SelectedTest = null;
+        }, canEdit);
     }
 
     private async void LoadData()

@@ -54,7 +54,33 @@ public class Test
         await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
         return new TeacherTestViewModel(newTest);
     }
-    //
+    
+    public static async Task<bool> DeleteTest(Test test)
+    {
+        try
+        {
+            Locator.GetLocator().GetService<TestingSystemDbContext>().Test.Remove(test);
+            await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
+
+    public static void CanselDeleteTest(Test test)
+    {
+        Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(test).State = EntityState.Unchanged;
+    }
+
+    public void ResetChanges()
+    {
+        var originalTest = (Test)Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).OriginalValues.ToObject();
+        Name = originalTest.Name;
+    }
+
     // public async Task<bool> SaveChanges()
     // {
     //     try
@@ -84,21 +110,4 @@ public class Test
     //         .FirstOrDefaultAsync(x => x.CreatorUser.Id == userId && x.Id == testId);
     //     return test == null ? null : TestViewModel.GetTest(test, false);
     // }
-    //
-    //
-    // public static async Task<bool> DeleteTest(Test test)
-    // {
-    //     try
-    //     {
-    //         Locator.GetLocator().GetService<TestingSystemDbContext>().Test.Remove(test);
-    //         await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
-    //         return true;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         return false;
-    //     }
-    // }
-
 }
