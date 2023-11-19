@@ -52,7 +52,7 @@ public class Test
         newTest.Name = $"New test {DateTime.Now}";
         await Locator.GetLocator().GetService<TestingSystemDbContext>()!.Test.AddAsync(newTest);
         await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
-        return new TeacherTestViewModel(newTest);
+        return new TeacherTestViewModel(newTest, true);
     }
     
     public static async Task<bool> DeleteTest(Test test)
@@ -75,25 +75,25 @@ public class Test
         Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(test).State = EntityState.Unchanged;
     }
 
-    public void ResetChanges()
+    public async Task ResetChanges()
     {
         var originalTest = (Test)Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).OriginalValues.ToObject();
         Name = originalTest.Name;
     }
 
-    // public async Task<bool> SaveChanges()
-    // {
-    //     try
-    //     {
-    //         await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
-    //         return true;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         return false;
-    //     }
-    // }
+    public async Task<bool> SaveChanges()
+    {
+        try
+        {
+            await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
     //
     // public void ResetChanges()
     // {

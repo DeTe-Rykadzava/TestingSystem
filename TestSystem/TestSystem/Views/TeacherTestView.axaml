@@ -6,4 +6,91 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TestSystem.Views.TeacherTestView"
              x:DataType="vm:TeacherTestViewModel">
+    <Grid RowDefinitions="Auto * Auto"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Background="#303030">
+        <Border Grid.Row="0"
+                Padding=" 20">
+            <StackPanel Spacing="20"
+                        Orientation="Vertical">
+                <TextBlock Text="Test title" 
+                           FontSize="18"
+                           FontWeight="Bold"
+                           FontStyle="Italic"/>
+                <TextBox Text="{Binding Title}"
+                         Watermark="Enter test name (required)"
+                         FontSize="16" 
+                         FontStyle="Italic"/>
+            </StackPanel>
+        </Border>
+        <Grid Grid.Row="1"
+              RowDefinitions="Auto *"
+              Margin="20">
+            <TextBlock Grid.Row="0"
+                       Text="Test questions:" />
+            <ListBox Grid.Row="1">
+                <ListBox.Items>
+                    <ListBoxItem Padding="0"
+                                 Margin="2">
+                        <Border BorderBrush="DarkGray"
+                                BorderThickness="0 0 0 2"
+                                Padding="20">
+                            <TextBlock Text="test" />
+                        </Border>
+                    </ListBoxItem>
+                    <ListBoxItem Padding="0"
+                                 Margin="2">
+                        <Border BorderBrush="DarkGray"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="20">
+                            <TextBlock Text="test" />
+                        </Border>
+                    </ListBoxItem>
+                    <ListBoxItem Padding="0"
+                                 Margin="2">
+                        <Border BorderBrush="DarkGray"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="20">
+                            <TextBlock Text="test" />
+                        </Border>
+                    </ListBoxItem>
+                    <ListBoxItem Padding="0"
+                                 Margin="2">
+                        <Border BorderBrush="DarkGray"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="20">
+                            <TextBlock Text="test" />
+                        </Border>
+                    </ListBoxItem>
+                    <ListBoxItem Padding="0"
+                                 Margin="2">
+                        <Border BorderBrush="DarkGray"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="20">
+                            <TextBlock Text="test" />
+                        </Border>
+                    </ListBoxItem>
+                </ListBox.Items>
+            </ListBox>
+        </Grid>
+        <Border Grid.Row="2"
+                BorderBrush="DarkGray"
+                BorderThickness="0 0 0 2"
+                Padding=" 20 10">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="5"
+                        HorizontalAlignment="Right">
+                <Button Content="Cansel"
+                        Classes="Flat"
+                        Command="{Binding CanselCommand}" />
+                <Button Content="Save"
+                        Command="{Binding SaveCommand}" />
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>

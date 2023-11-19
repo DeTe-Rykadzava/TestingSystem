@@ -1,5 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reactive.Concurrency;
+using System.Threading.Tasks;
 using ReactiveUI;
+using System;
+using System.Reactive.Linq;
+using System.Windows.Input;
+using TestSystem.Core;
 using TestSystem.Models;
 
 namespace TestSystem.ViewModels;
@@ -13,7 +18,6 @@ public class TeacherTestViewModel : ViewModelBase
         get => _test.Name;
         set {
             _test.Name = value;
-            ShortTitle = GetShortTitle(_test.Name);
             this.RaisePropertyChanged();
         }
     }
@@ -25,20 +29,44 @@ public class TeacherTestViewModel : ViewModelBase
         get => _shortTitle;
         set => this.RaiseAndSetIfChanged(ref _shortTitle, value);
     }
+
+    private TaskCompletionSource<bool> _completionSource;
+
+    public ICommand CanselCommand { get; }
     
-    public TeacherTestViewModel(Test test)
+    public ICommand SaveCommand { get; }
+
+    public TeacherTestViewModel(Test test, bool isNew = false)
     {
         _test = test;
-        ShortTitle = GetShortTitle(_test.Name);
+        _completionSource = new TaskCompletionSource<bool>();
+        CanselCommand = ReactiveCommand.CreateFromTask( async () =>
+        {
+            if(!isNew)
+                await ResetChanges();
+            _completionSource.SetResult(false);
+        });
+        var canSave = this.WhenAnyValue(x => x.Title, (title) => !string.IsNullOrWhiteSpace(title))
+            .DistinctUntilChanged();
+        SaveCommand = ReactiveCommand.CreateFromTask( async () =>
+        {
+            if (!await SaveChanges())
+            {
+                await MessageBox.ShowMessageBox("Error","Cannot save changes");
+                await DeleteTest();
+                return;
+            }
+            if (isNew)
+                isNew = !isNew;
+            _completionSource.SetResult(true);
+        }, canSave);
+        this.WhenAnyValue(x => x.Title).Subscribe(async s => { ShortTitle = await GetShortTitle(s); });
+        RxApp.MainThreadScheduler.Schedule(async s => { ShortTitle = await GetShortTitle(_test.Name); });
     }
 
-    private string GetShortTitle(string title)
+    private async Task<string> GetShortTitle(string title)
     {
-        var shortTitle = "";
-        if (title.Length > 50)
-            shortTitle = title.Substring(0, 50);
-        else
-            shortTitle = title;
+        var shortTitle = title.Length > 50 ? title[..50] : title;
         return shortTitle;
     }
 
@@ -52,13 +80,21 @@ public class TeacherTestViewModel : ViewModelBase
         Test.CanselDeleteTest(_test);
     }
 
-    public async Task ResetChanges()
+    public async Task<bool> EditTest()
     {
-        
+        if (_completionSource.Task.IsCompleted || _completionSource.Task.IsCanceled)
+            _completionSource = new TaskCompletionSource<bool>();
+        return await _completionSource.Task;
     }
 
-    public async Task<bool> SaveChanges()
+    private async Task ResetChanges()
     {
-        return true;
+        await _test.ResetChanges();
+        ShortTitle = await GetShortTitle(_test.Name);
+    }
+
+    private async Task<bool> SaveChanges()
+    {
+        return await _test.SaveChanges();
     }
 }

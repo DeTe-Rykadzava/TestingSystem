@@ -70,12 +70,12 @@ public class TeacherViewModel : ViewModelBase
         CreateTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
             var newTest = await Test.CreateNewBlackTest();
-            Tests.Add(newTest);
-            await newTest.ResetChanges();
-        if (!(await newTest.SaveChanges()))
-        {
-        await MessageBox.ShowMessageBox("Error","Не удалось сохранить новые данные, попробуйте отредактировать");
-        }
+            TestVm = newTest;
+            if (!await newTest.EditTest())
+                await newTest.DeleteTest();
+            else
+                Tests.Add(newTest);
+            TestVm = null;
         });
 
         var canEdit = this.WhenAnyValue(x => x.SelectedTest, x => x.Tests, (selectedTest, tests) => selectedTest != null && tests.Any())
@@ -83,20 +83,10 @@ public class TeacherViewModel : ViewModelBase
         
         EditTestCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            // SelectedTest!.BeginEdit();
-            // var res = await ShowTestInteraction.Handle(SelectedTest!);
-            // if (res == null)
-            // {
-            //     await SelectedTest.ResetChanges();
-            //     return;
-            // }
-            // else
-            // {
-            //     SelectedTest.EndEdit();
-            //     await res.SaveChanges();
-            // }
-            //
-            // SelectedTest = null;
+            TestVm = SelectedTest!;
+            await SelectedTest!.EditTest();
+            SelectedTest = null;
+            TestVm = null;
         }, canEdit);
         
         DeleteTestCommand = ReactiveCommand.CreateFromTask(async () =>

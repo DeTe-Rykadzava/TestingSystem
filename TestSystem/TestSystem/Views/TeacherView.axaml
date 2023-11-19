@@ -189,6 +189,12 @@
             </Border>
         </DockPanel>
         <ContentControl Content="{Binding TestVm}"
-                        IsVisible="{Binding TestVm, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        IsVisible="{Binding TestVm, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Padding="15">
+            <ContentControl.Background>
+                <SolidColorBrush Color="DarkGray"
+                                 Opacity="0.5"/>
+            </ContentControl.Background>
+        </ContentControl>
     </Panel>
 </UserControl>
