@@ -26,9 +26,37 @@
         </Border>
         <Grid Grid.Row="1"
               RowDefinitions="Auto *"
-              Margin="20">
-            <TextBlock Grid.Row="0"
-                       Text="Test questions:" />
+              Margin="20 10">
+            <DockPanel Grid.Row="0"
+                       LastChildFill="False"
+                       Margin="0 5">
+                <TextBlock DockPanel.Dock="Left"
+                           Text="Test questions:" 
+                           VerticalAlignment="Center"/>
+                <ComboBox DockPanel.Dock="Right"
+                          Classes="CannotSelect"
+                          Margin="20 0"
+                          PlaceholderText="Add new question"
+                          VerticalAlignment="Center"
+                          Width="220">
+                    <ComboBox.Items>
+                        <ComboBoxItem >
+                            <Button Classes="Flat"
+                                    BorderBrush="#03a9f4"
+                                    BorderThickness="0 0 0 2"
+                                    Content="With one answer"
+                                    CornerRadius="0"/>
+                        </ComboBoxItem>
+                        <ComboBoxItem >
+                            <Button Classes="Flat"
+                                    BorderBrush="#03a9f4"
+                                    BorderThickness="0 0 0 2"
+                                    Content="With many answers"
+                                    CornerRadius="0"/>
+                        </ComboBoxItem>
+                    </ComboBox.Items>
+                </ComboBox>
+            </DockPanel>
             <ListBox Grid.Row="1">
                 <ListBox.Items>
                     <ListBoxItem Padding="0"

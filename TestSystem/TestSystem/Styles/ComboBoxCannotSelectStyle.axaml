@@ -1,0 +1,155 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:ripple="clr-namespace:Material.Ripple;assembly=Material.Ripple">
+    <Design.PreviewWith>
+        <Border Padding="20"
+                Height="500"
+                Width="600">
+            <!-- Add Controls for Previewer Here -->
+            <ComboBox Classes="CannotSelect"
+                      Width="250"
+                      Margin="20 0"
+                      PlaceholderText="Add new question"
+                      VerticalAlignment="Center">
+              <ComboBox.Items>
+                <ComboBoxItem >
+                  <Button Classes="Flat"
+                          BorderBrush="#03a9f4"
+                          BorderThickness="0 0 0 2"
+                          Content="With one answer"
+                          CornerRadius="0"/>
+                </ComboBoxItem>
+                <ComboBoxItem >
+                  <Button Classes="Flat"
+                          BorderBrush="#03a9f4"
+                          BorderThickness="0 0 0 2"
+                          Content="With many answers"
+                          CornerRadius="0"/>
+                </ComboBoxItem>
+              </ComboBox.Items>
+            </ComboBox>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Add Styles Here -->
+    
+    <Style Selector="ComboBox.CannotSelect">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="PlaceholderForeground" Value="{DynamicResource MaterialBodyBrush}" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="ClipToBounds" Value="False" />
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border Name="PART_RootBorder"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="{TemplateBinding CornerRadius}">
+          <Panel Name="PART_RootPanel">
+            <Grid ColumnDefinitions="*,  Auto">
+              <Panel Grid.Column="0">
+                <Border Name="PART_BackgroundField" />
+
+                <Panel Name="PART_InnerPanel" HorizontalAlignment="Left">
+                  <TextBlock Name="PART_PlaceholderText"
+                             Text="{TemplateBinding PlaceholderText}"
+                             Foreground="{TemplateBinding PlaceholderForeground}"
+                             VerticalAlignment="Center"
+                             Margin="10 0"/>
+
+                  <ContentPresenter Name="PART_ContentPresenter"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentTemplate="{TemplateBinding ItemTemplate}" />
+                </Panel>
+
+                <Border Name="PART_LabelRootBorder">
+                  <TextBlock Name="PART_LabelText"
+                             Text="{TemplateBinding (assists:ComboBoxAssist.Label)}" />
+                </Border>
+              </Panel>
+             
+              
+              <Border Name="splitBorder"
+                      Grid.Column="1"
+                      Margin="16 8"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center"
+                      BorderBrush="Transparent"
+                      BorderThickness="0">
+                <Path Name="arrow"
+                      Width="8" Height="8"
+                      Stretch="Uniform"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center"
+                      Data="M7,10L12,15L17,10H7Z"
+                      Fill="{DynamicResource MaterialTextBoxBorderBrush}" />
+              </Border>
+            </Grid>
+
+
+            <controls:MaterialUnderline Name="PART_Underline"
+                                        Theme="{StaticResource MaterialUnderlineY}" />
+
+            <Panel Name="PART_PopupContainer">
+              <Popup Name="PART_Popup"
+                     IsLightDismissEnabled="True"
+                     IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}">
+                <controls:Card Name="PART_Card"
+                               MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                               MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}">
+                  <ScrollViewer Name="PART_ScrollViewer">
+                    <ItemsPresenter Name="PART_ItemsPresenter"
+                                    ItemsPanel="{TemplateBinding ItemsPanel}"
+                                    />
+                  </ScrollViewer>
+                </controls:Card>
+              </Popup>
+            </Panel>
+          </Panel>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </Style>
+    
+    <Style Selector="ComboBox.CannotSelect ComboBoxItem">
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="VerticalContentAlignment" Value="Stretch" />
+      <Setter Property="Margin" Value="10 5 10 5"/>
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Grid>
+            <Border Name="PointerOverBorder"
+                    Opacity="0"
+                    Background="{TemplateBinding Foreground}" />
+            <ripple:RippleEffect RippleFill="{DynamicResource MaterialFlatButtonRippleBrush}">
+              <ContentPresenter Name="PART_ContentPresenter"
+                                Background="{TemplateBinding Background}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                Content="{TemplateBinding Content}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Padding="{TemplateBinding Padding}"/>
+            </ripple:RippleEffect>
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:selected /template/ Border#PointerOverBorder">
+        <Setter Property="Opacity" Value="0.1" />
+      </Style>
+      <Style Selector="^:pressed /template/ Border#PointerOverBorder">
+        <Setter Property="Opacity" Value="0.15" />
+      </Style>
+    </Style>
+
+    
+</Styles>
