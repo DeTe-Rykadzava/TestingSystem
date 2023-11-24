@@ -2,8 +2,13 @@
 using System.Threading.Tasks;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using DynamicData;
 using TestSystem.Core;
 using TestSystem.Models;
 
@@ -36,6 +41,10 @@ public class TeacherTestViewModel : ViewModelBase
     
     public ICommand SaveCommand { get; }
 
+    public ObservableCollection<QueryTypeViewModel> QueryTypes { get; } = new ();
+
+    public ReactiveCommand<QueryTypeViewModel, Unit> AddQuestionCommand { get; }
+
     public TeacherTestViewModel(Test test, bool isNew = false)
     {
         _test = test;
@@ -60,8 +69,46 @@ public class TeacherTestViewModel : ViewModelBase
                 isNew = !isNew;
             _completionSource.SetResult(true);
         }, canSave);
+        AddQuestionCommand = ReactiveCommand.CreateFromTask(async (QueryTypeViewModel questionType) =>
+        {
+            await MessageBox.ShowMessageBox($"{questionType.TypeName}", $"{questionType.TypeName}");
+        });
+        
         this.WhenAnyValue(x => x.Title).Subscribe(async s => { ShortTitle = await GetShortTitle(s); });
         RxApp.MainThreadScheduler.Schedule(async s => { ShortTitle = await GetShortTitle(_test.Name); });
+    }
+
+    private async void LoadData()
+    {
+        var types = await QueryType.GetQueryTypes();
+        if (!types.Any()) return;
+        if (!QueryTypes.Any())
+        {
+            QueryTypes.AddRange(types);
+            return;
+        }
+        if (types.Count > QueryTypes.Count)
+        {
+            foreach (var type in types)
+            {
+                var findedType = QueryTypes.FirstOrDefault(x => x == type);
+                if(findedType != null)
+                    continue;
+                QueryTypes.Add(type);
+            }
+            return;
+        }
+
+        if (types.Count < QueryTypes.Count)
+        {
+            foreach (var type in QueryTypes)
+            {
+                var findedType = types.FirstOrDefault(x => x == type);
+                if(findedType == null)
+                    QueryTypes.Remove(type);
+            }
+            return;
+        }
     }
 
     private async Task<string> GetShortTitle(string title)
@@ -84,6 +131,7 @@ public class TeacherTestViewModel : ViewModelBase
     {
         if (_completionSource.Task.IsCompleted || _completionSource.Task.IsCanceled)
             _completionSource = new TaskCompletionSource<bool>();
+        Task.Run(LoadData);
         return await _completionSource.Task;
     }
 

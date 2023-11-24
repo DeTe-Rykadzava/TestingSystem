@@ -32,42 +32,45 @@ public class QueryType
     //     var type = (await GetAskTypes()).FirstOrDefault(x => x.TypeName == typeName);
     //     return type;
     // }
-    //
-    // private static async Task<IEnumerable<AskTypeViewModel>> GetQueryTypes()
-    // {
-    //     if (Locator.GetLocator().GetService<TestingSystemDbContext>() == null)
-    //     {
-    //         return Array.Empty<AskTypeViewModel>();
-    //     }
-    //     
-    //     var roles = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.QueryType.ToListAsync();
-    //     if (!roles.Any())
-    //     {
-    //         roles = await CreateBaseAskTypes();
-    //     }
-    //
-    //     return roles.Select(s => new AskTypeViewModel(s)).ToList();
-    // }
-    //
-    // private static async Task<List<QueryType>> CreateBaseAskTypes()
-    // {
-    //     var types = new List<QueryType>();
-    //     
-    //     // select
-    //     var selectType = new QueryType("Select");
-    //     types.Add(selectType);
-    //     
-    //     await TestingSystemDbContext.Instance.QueryType.AddRangeAsync(types);
-    //     
-    //     try
-    //     {
-    //         await TestingSystemDbContext.Instance.SaveChangesAsync();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //     }
-    //     
-    //     return types;
-    // }
+    
+    public static async Task<List<QueryTypeViewModel>> GetQueryTypes()
+    {
+        if (Locator.GetLocator().GetService<TestingSystemDbContext>() == null)
+        {
+            return new List<QueryTypeViewModel>();
+        }
+        
+        var roles = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.QueryType.ToListAsync();
+        if (!roles.Any())
+        {
+            roles = await CreateBaseAskTypes();
+        }
+    
+        return roles.Select(s => new QueryTypeViewModel(s)).ToList();
+    }
+    
+    private static async Task<List<QueryType>> CreateBaseAskTypes()
+    {
+        var types = new List<QueryType>();
+        
+        // select
+        var selectOneType = new QueryType("one answer");
+        types.Add(selectOneType);
+        
+        var selectManyType = new QueryType("many answer");
+        types.Add(selectManyType);
+        
+        await TestingSystemDbContext.Instance.QueryType.AddRangeAsync(types);
+        
+        try
+        {
+            await TestingSystemDbContext.Instance.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        
+        return types;
+    }
 }

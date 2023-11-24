@@ -38,23 +38,35 @@
                           Margin="20 0"
                           PlaceholderText="Add new question"
                           VerticalAlignment="Center"
-                          Width="220">
-                    <ComboBox.Items>
-                        <ComboBoxItem >
+                          Width="220"
+                          ItemsSource="{Binding QueryTypes}">
+                    <ComboBox.DataTemplates>
+                        <DataTemplate x:DataType="vm:QueryTypeViewModel">
                             <Button Classes="Flat"
                                     BorderBrush="#03a9f4"
                                     BorderThickness="0 0 0 2"
-                                    Content="With one answer"
-                                    CornerRadius="0"/>
-                        </ComboBoxItem>
-                        <ComboBoxItem >
-                            <Button Classes="Flat"
-                                    BorderBrush="#03a9f4"
-                                    BorderThickness="0 0 0 2"
-                                    Content="With many answers"
-                                    CornerRadius="0"/>
-                        </ComboBoxItem>
-                    </ComboBox.Items>
+                                    CornerRadius="0"
+                                    Content="{Binding TypeName, StringFormat='With \{0}'}"
+                                    Command="{Binding $parent[UserControl].((vm:TeacherTestViewModel)DataContext).AddQuestionCommand}"
+                                    CommandParameter="{Binding .}"/>
+                        </DataTemplate>
+                    </ComboBox.DataTemplates>
+                    <!-- <ComboBox.Items> -->
+                    <!--     <ComboBoxItem > -->
+                    <!--         <Button Classes="Flat" -->
+                    <!--                 BorderBrush="#03a9f4" -->
+                    <!--                 BorderThickness="0 0 0 2" -->
+                    <!--                 Content="With one answer" -->
+                    <!--                 CornerRadius="0"/> -->
+                    <!--     </ComboBoxItem> -->
+                    <!--     <ComboBoxItem > -->
+                    <!--         <Button Classes="Flat" -->
+                    <!--                 BorderBrush="#03a9f4" -->
+                    <!--                 BorderThickness="0 0 0 2" -->
+                    <!--                 Content="With many answers" -->
+                    <!--                 CornerRadius="0"/> -->
+                    <!--     </ComboBoxItem> -->
+                    <!-- </ComboBox.Items> -->
                 </ComboBox>
             </DockPanel>
             <ListBox Grid.Row="1">
