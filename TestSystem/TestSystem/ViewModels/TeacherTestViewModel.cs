@@ -71,7 +71,7 @@ public class TeacherTestViewModel : ViewModelBase
         }, canSave);
         AddQuestionCommand = ReactiveCommand.CreateFromTask(async (QueryTypeViewModel questionType) =>
         {
-            await MessageBox.ShowMessageBox($"{questionType.TypeName}", $"{questionType.TypeName}");
+            
         });
         
         this.WhenAnyValue(x => x.Title).Subscribe(async s => { ShortTitle = await GetShortTitle(s); });

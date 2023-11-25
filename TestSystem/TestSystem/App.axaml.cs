@@ -23,6 +23,7 @@ public partial class App : Application
         try
         {
             TestingSystemDbContext.Instance.Database.EnsureCreated();
+            Console.WriteLine("success connection");
             successConDatabase = true;
         }
         catch (Exception e)

@@ -8,12 +8,17 @@ namespace TestSystem.Models;
 public class QueryAnswer
 {
     public int Id { get; set; }
-    public string AnswerValue { get; set; } = null!;
+    public string Answer { get; set; } = null!;
 
     public bool IsCorrect { get; set; }
 
+    private QueryAnswer()
+    {
+        
+    }
+
     private QueryAnswer(string answerValue)
     {
-        AnswerValue = answerValue;
+        Answer = answerValue;
     }
 }

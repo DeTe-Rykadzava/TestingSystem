@@ -11,7 +11,7 @@ namespace TestSystem.Models;
 public class QueryTest
 {
     public int Id { get; set; }
-    public string Ask { get; set; } = null!;
+    public string Query { get; set; } = null!;
     
     public QueryType Type { get; set; } = null!;
     

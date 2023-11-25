@@ -32,7 +32,12 @@ public class Test
     //     var asks = Asks.Select(s => TestAskViewModel.GetTestAsk(s)).ToList();
     //     return asks;
     // }
-    //
+
+    public async Task<QueryTestTeacherViewModel?> AddQuery(QueryTypeViewModel type)
+    {
+        return null;
+    }
+
     public static async Task<List<TeacherTestViewModel>> GetAllUserTests()
     {
         var userId = User.GetCurrentUser().UserId;

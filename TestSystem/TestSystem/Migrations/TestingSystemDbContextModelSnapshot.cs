@@ -47,7 +47,7 @@ namespace TestSystem.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AnswerValue")
+                    b.Property<string>("Answer")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -72,7 +72,7 @@ namespace TestSystem.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Ask")
+                    b.Property<string>("Query")
                         .IsRequired()
                         .HasColumnType("text");
 
