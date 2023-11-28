@@ -45,6 +45,8 @@ public class TeacherTestViewModel : ViewModelBase
 
     public ReactiveCommand<QueryTypeViewModel, Unit> AddQuestionCommand { get; }
 
+    public ObservableCollection<QueryTestTeacherViewModel> Queries { get; } = new();
+
     public TeacherTestViewModel(Test test, bool isNew = false)
     {
         _test = test;
@@ -71,7 +73,9 @@ public class TeacherTestViewModel : ViewModelBase
         }, canSave);
         AddQuestionCommand = ReactiveCommand.CreateFromTask(async (QueryTypeViewModel questionType) =>
         {
-            
+            var query = await _test.AddQuery(questionType);
+            if (query != null)
+                Queries.Add(query);
         });
         
         this.WhenAnyValue(x => x.Title).Subscribe(async s => { ShortTitle = await GetShortTitle(s); });

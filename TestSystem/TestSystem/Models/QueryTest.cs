@@ -38,26 +38,27 @@ public class QueryTest
     //         RightAnswer = answer;
     // }
     //
-    // public static async Task<TestAskViewModel> CreateNewTestAsk(Test test)
-    // {
-    //     var newTestAsk = new QueryTest
-    //     {
-    //         Ask = $"New ask {DateTime.Now}",
-    //         Type = (await QueryType.GetTypeByName("Select"))!.Type,
-    //         Answers = new List<QueryAnswer>()
-    //     };
-    //     (await QueryAnswer.CreateNewTestAsk()).SetAnswer(out QueryAnswer answer);
-    //     newTestAsk.Answers.Add(answer);
-    //     newTestAsk.RightAnswer = answer;
-    //     if (test.Asks == null)
-    //         test.Asks = new List<QueryTest>();
-    //     test.Asks.Add(newTestAsk);
-    //     await Locator.GetLocator().GetService<TestingSystemDbContext>()!.TestAsk.AddAsync(newTestAsk);
-    //     Locator.GetLocator().GetService<TestingSystemDbContext>()!.Entry(test).State = EntityState.Modified;
-    //     await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
-    //     return TestAskViewModel.GetTestAsk(newTestAsk, true);
-    // }
-    //
+    public static async Task<QueryTestTeacherViewModel?> CreateNewQuery(Test test, QueryTypeViewModel queryType )
+    {
+        var type = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.QueryType
+            .FirstOrDefaultAsync(x => x.Id == queryType.Id);
+        if (type == null)
+            return null;
+        var newQuery = new QueryTest
+        {
+            Query = $"New ask {DateTime.Now}",
+            Type = type,
+            Answers = new()
+        };
+        await QueryAnswer.CreateQueryAnswer(newQuery);
+        test.Asks ??= new List<QueryTest>();
+        test.Asks.Add(newQuery);
+        await Locator.GetLocator().GetService<TestingSystemDbContext>()!.QueryTest.AddAsync(newQuery);
+        Locator.GetLocator().GetService<TestingSystemDbContext>()!.Entry(test).State = EntityState.Modified;
+        await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
+        return new QueryTestTeacherViewModel(newQuery);
+    }
+    
     // public async Task<bool> SaveChanges()
     // {
     //     try
@@ -71,7 +72,7 @@ public class QueryTest
     //         return false;
     //     }
     // }
-    //
+    
     // public static async Task<bool> DeleteAsk(QueryTest ask)
     // {
     //     try

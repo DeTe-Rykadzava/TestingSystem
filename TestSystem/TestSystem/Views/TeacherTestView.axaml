@@ -69,53 +69,64 @@
                     <!-- </ComboBox.Items> -->
                 </ComboBox>
             </DockPanel>
-            <ListBox Grid.Row="1">
-                <ListBox.Items>
-                    <ListBoxItem Padding="0"
-                                 Margin="2">
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding Queries}">
+                <ListBox.DataTemplates>
+                    <DataTemplate x:DataType="vm:QueryTestTeacherViewModel">
                         <Border BorderBrush="DarkGray"
                                 BorderThickness="0 0 0 2"
                                 Padding="20">
-                            <TextBlock Text="test" />
+                            <TextBlock Text="{Binding QueryString}" />
                         </Border>
-                    </ListBoxItem>
-                    <ListBoxItem Padding="0"
-                                 Margin="2">
-                        <Border BorderBrush="DarkGray"
-                                BorderThickness="1"
-                                CornerRadius="8"
-                                Padding="20">
-                            <TextBlock Text="test" />
-                        </Border>
-                    </ListBoxItem>
-                    <ListBoxItem Padding="0"
-                                 Margin="2">
-                        <Border BorderBrush="DarkGray"
-                                BorderThickness="1"
-                                CornerRadius="8"
-                                Padding="20">
-                            <TextBlock Text="test" />
-                        </Border>
-                    </ListBoxItem>
-                    <ListBoxItem Padding="0"
-                                 Margin="2">
-                        <Border BorderBrush="DarkGray"
-                                BorderThickness="1"
-                                CornerRadius="8"
-                                Padding="20">
-                            <TextBlock Text="test" />
-                        </Border>
-                    </ListBoxItem>
-                    <ListBoxItem Padding="0"
-                                 Margin="2">
-                        <Border BorderBrush="DarkGray"
-                                BorderThickness="1"
-                                CornerRadius="8"
-                                Padding="20">
-                            <TextBlock Text="test" />
-                        </Border>
-                    </ListBoxItem>
-                </ListBox.Items>
+                    </DataTemplate>
+                </ListBox.DataTemplates>
+                
+                <!-- <ListBox.Items> -->
+                <!--     <ListBoxItem Padding="0" -->
+                <!--                  Margin="2"> -->
+                <!--         <Border BorderBrush="DarkGray" -->
+                <!--                 BorderThickness="0 0 0 2" -->
+                <!--                 Padding="20"> -->
+                <!--             <TextBlock Text="test" /> -->
+                <!--         </Border> -->
+                <!--     </ListBoxItem> -->
+                <!--     <ListBoxItem Padding="0" -->
+                <!--                  Margin="2"> -->
+                <!--         <Border BorderBrush="DarkGray" -->
+                <!--                 BorderThickness="1" -->
+                <!--                 CornerRadius="8" -->
+                <!--                 Padding="20"> -->
+                <!--             <TextBlock Text="test" /> -->
+                <!--         </Border> -->
+                <!--     </ListBoxItem> -->
+                <!--     <ListBoxItem Padding="0" -->
+                <!--                  Margin="2"> -->
+                <!--         <Border BorderBrush="DarkGray" -->
+                <!--                 BorderThickness="1" -->
+                <!--                 CornerRadius="8" -->
+                <!--                 Padding="20"> -->
+                <!--             <TextBlock Text="test" /> -->
+                <!--         </Border> -->
+                <!--     </ListBoxItem> -->
+                <!--     <ListBoxItem Padding="0" -->
+                <!--                  Margin="2"> -->
+                <!--         <Border BorderBrush="DarkGray" -->
+                <!--                 BorderThickness="1" -->
+                <!--                 CornerRadius="8" -->
+                <!--                 Padding="20"> -->
+                <!--             <TextBlock Text="test" /> -->
+                <!--         </Border> -->
+                <!--     </ListBoxItem> -->
+                <!--     <ListBoxItem Padding="0" -->
+                <!--                  Margin="2"> -->
+                <!--         <Border BorderBrush="DarkGray" -->
+                <!--                 BorderThickness="1" -->
+                <!--                 CornerRadius="8" -->
+                <!--                 Padding="20"> -->
+                <!--             <TextBlock Text="test" /> -->
+                <!--         </Border> -->
+                <!--     </ListBoxItem> -->
+                <!-- </ListBox.Items> -->
             </ListBox>
         </Grid>
         <Border Grid.Row="2"

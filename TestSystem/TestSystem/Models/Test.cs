@@ -24,18 +24,21 @@ public class Test
     {
         CreatorUser = creatorUser;
     }
-    
-    // public List<TestAskViewModel> GetTestAsks()
-    // {
-    //     if (Asks == null)
-    //         return new List<TestAskViewModel>();
-    //     var asks = Asks.Select(s => TestAskViewModel.GetTestAsk(s)).ToList();
-    //     return asks;
-    // }
 
     public async Task<QueryTestTeacherViewModel?> AddQuery(QueryTypeViewModel type)
     {
-        return null;
+        return await QueryTest.CreateNewQuery(this, type);
+        // switch (type.TypeName)
+        // {
+        //     case "one answer":
+        //         return await QueryTest.CreateNewQuery(this, type);
+        //         break;
+        //     case "many answer":
+        //         return await QueryTest.CreateNewQuery(this, type);
+        //         break;
+        //     default:
+        //         return null;
+        // }
     }
 
     public static async Task<List<TeacherTestViewModel>> GetAllUserTests()
@@ -49,6 +52,7 @@ public class Test
         var valTests = tests.Select(s => new TeacherTestViewModel(s)).ToList();
         return valTests;
     }
+    
     public static async Task<TeacherTestViewModel> CreateNewBlackTest()
     {
         var userId = User.GetCurrentUser()!.UserId;
@@ -99,20 +103,4 @@ public class Test
             return false;
         }
     }
-    //
-    // public void ResetChanges()
-    // {
-    //     var originalEntity = (Test)Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).OriginalValues.ToObject();
-    //     this.Name = originalEntity.Name;
-    // }
-    //
-    // public static async Task<TestViewModel?> GetTestById(int testId)
-    // {
-    //     var userId = User.GetCurrentUser().UserId;
-    //     var test = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
-    //         .Include(i => i.CreatorUser)
-    //         .Include(i => i.Asks)
-    //         .FirstOrDefaultAsync(x => x.CreatorUser.Id == userId && x.Id == testId);
-    //     return test == null ? null : TestViewModel.GetTest(test, false);
-    // }
 }
