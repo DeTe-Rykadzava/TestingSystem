@@ -51,12 +51,22 @@ public class QueryTest
             Answers = new()
         };
         await QueryAnswer.CreateQueryAnswer(newQuery);
-        test.Asks ??= new List<QueryTest>();
-        test.Asks.Add(newQuery);
+        test.Queries ??= new List<QueryTest>();
+        test.Queries.Add(newQuery);
         await Locator.GetLocator().GetService<TestingSystemDbContext>()!.QueryTest.AddAsync(newQuery);
         Locator.GetLocator().GetService<TestingSystemDbContext>()!.Entry(test).State = EntityState.Modified;
         await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
-        return new QueryTestTeacherViewModel(newQuery);
+        switch (type.Type)
+        {
+            case "one answer":
+                return new QueryTestTeacherOneAnswerViewModel(newQuery);
+                break;
+            case "many answer":
+                return new QueryTestTeacherManyAnswerViewModel(newQuery);
+                break;
+            default:
+                throw new Exception("cannot determine query type");
+        }
     }
     
     // public async Task<bool> SaveChanges()

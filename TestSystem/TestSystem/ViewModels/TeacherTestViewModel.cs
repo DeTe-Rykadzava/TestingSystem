@@ -73,16 +73,39 @@ public class TeacherTestViewModel : ViewModelBase
         }, canSave);
         AddQuestionCommand = ReactiveCommand.CreateFromTask(async (QueryTypeViewModel questionType) =>
         {
-            var query = await _test.AddQuery(questionType);
-            if (query != null)
-                Queries.Add(query);
+            try
+            {
+                var query = await _test.AddQuery(questionType);
+                if (query != null)
+                    Queries.Add(query);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                await MessageBox.ShowMessageBox("Query add error","Произошла ошибка при добавлении вопроса к тесту, обратитесь к разработчику.");
+            }
         });
         
         this.WhenAnyValue(x => x.Title).Subscribe(async s => { ShortTitle = await GetShortTitle(s); });
         RxApp.MainThreadScheduler.Schedule(async s => { ShortTitle = await GetShortTitle(_test.Name); });
     }
 
-    private async void LoadData()
+    private void LoadData()
+    {
+        Task.Run(LoadQueryTypes);
+
+        Task.Run(LoadQueries);
+    }
+
+    private void LoadQueries()
+    {
+        var queries = _test.GetTestQueries();
+        if (!queries.Any()) return;
+        if (Queries.Any()) return;
+        Queries.AddRange(queries);
+    }
+
+    private async void LoadQueryTypes()
     {
         var types = await QueryType.GetQueryTypes();
         if (!types.Any()) return;

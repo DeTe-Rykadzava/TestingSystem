@@ -13,7 +13,7 @@ public class Test
     public int Id { get; set; }
     public string Name { get; set; } = null!;
     public User CreatorUser { get; set; } = null!;
-    public List<QueryTest> Asks { get; set; } = null!;
+    public List<QueryTest> Queries { get; set; } = null!;
 
     private Test()
     {
@@ -23,6 +23,23 @@ public class Test
     private Test(User creatorUser)
     {
         CreatorUser = creatorUser;
+    }
+
+    public List<QueryTestTeacherViewModel> GetTestQueries()
+    {
+        var queries = Queries.Select(s =>
+        {
+            switch (s.Type.Type)
+            {
+                case "one answer":
+                    return new QueryTestTeacherOneAnswerViewModel(s);
+                case "many answer":
+                    return new QueryTestTeacherManyAnswerViewModel(s);
+                default:
+                    return new QueryTestTeacherViewModel(s);
+            }
+        }).ToList();
+        return queries;
     }
 
     public async Task<QueryTestTeacherViewModel?> AddQuery(QueryTypeViewModel type)
@@ -46,7 +63,8 @@ public class Test
         var userId = User.GetCurrentUser().UserId;
         var tests = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
             .Include(i => i.CreatorUser)
-            .Include(i => i.Asks)
+            .Include(i => i.Queries)
+            .ThenInclude(i => i.Answers)
             .Where(x => x.CreatorUser.Id == userId)
             .ToListAsync();
         var valTests = tests.Select(s => new TeacherTestViewModel(s)).ToList();
