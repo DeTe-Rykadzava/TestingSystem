@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestSystem.Models;
@@ -11,9 +12,11 @@ using TestSystem.Models;
 namespace TestSystem.Migrations
 {
     [DbContext(typeof(TestingSystemDbContext))]
-    partial class TestingSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231130074056_rename column")]
+    partial class renamecolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

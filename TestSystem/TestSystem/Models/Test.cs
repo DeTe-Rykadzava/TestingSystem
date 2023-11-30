@@ -27,6 +27,8 @@ public class Test
 
     public List<QueryTestTeacherViewModel> GetTestQueries()
     {
+        if (Queries == null)
+            return new List<QueryTestTeacherViewModel>();
         var queries = Queries.Select(s =>
         {
             switch (s.Type.Type)
@@ -64,6 +66,8 @@ public class Test
         var tests = await Locator.GetLocator().GetService<TestingSystemDbContext>().Test
             .Include(i => i.CreatorUser)
             .Include(i => i.Queries)
+            .ThenInclude(i => i.Type)
+            .Include(i => i.Queries)
             .ThenInclude(i => i.Answers)
             .Where(x => x.CreatorUser.Id == userId)
             .ToListAsync();
@@ -75,8 +79,10 @@ public class Test
     {
         var userId = User.GetCurrentUser()!.UserId;
         var user = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.User.FirstOrDefaultAsync(x => x.Id == userId)!;
-        var newTest = new Test(user!);
-        newTest.Name = $"New test {DateTime.Now}";
+        var newTest = new Test(user!)
+        {
+            Name = $"New test {DateTime.Now}"
+        };
         await Locator.GetLocator().GetService<TestingSystemDbContext>()!.Test.AddAsync(newTest);
         await Locator.GetLocator().GetService<TestingSystemDbContext>()!.SaveChangesAsync();
         return new TeacherTestViewModel(newTest, true);

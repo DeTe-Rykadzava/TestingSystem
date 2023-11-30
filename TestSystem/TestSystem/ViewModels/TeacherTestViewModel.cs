@@ -4,11 +4,14 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using DynamicData;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 using TestSystem.Core;
 using TestSystem.Models;
 
@@ -35,6 +38,13 @@ public class TeacherTestViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _shortTitle, value);
     }
 
+    private bool _queriesValid = false;
+    public bool QueriesValid
+    {
+        get => _queriesValid;
+        private set => this.RaiseAndSetIfChanged(ref _queriesValid, value);
+    }
+
     private TaskCompletionSource<bool> _completionSource;
 
     public ICommand CanselCommand { get; }
@@ -44,6 +54,15 @@ public class TeacherTestViewModel : ViewModelBase
     public ObservableCollection<QueryTypeViewModel> QueryTypes { get; } = new ();
 
     public ReactiveCommand<QueryTypeViewModel, Unit> AddQuestionCommand { get; }
+
+    public ReactiveCommand<QueryTestTeacherViewModel, Unit> RemoveQueryCommand { get; }
+
+    private int _countRightQueries = 0;
+    public int CountRightQueries
+    {
+        get => _countRightQueries;
+        private set => this.RaiseAndSetIfChanged(ref _countRightQueries, value);
+    }
 
     public ObservableCollection<QueryTestTeacherViewModel> Queries { get; } = new();
 
@@ -57,7 +76,11 @@ public class TeacherTestViewModel : ViewModelBase
                 await ResetChanges();
             _completionSource.SetResult(false);
         });
-        var canSave = this.WhenAnyValue(x => x.Title, (title) => !string.IsNullOrWhiteSpace(title))
+        var canSave = this.WhenAnyValue( 
+                x => x.QueriesValid,x => x.Title, 
+                (queries, title) =>
+                    queries && !string.IsNullOrWhiteSpace(title)
+                )
             .DistinctUntilChanged();
         SaveCommand = ReactiveCommand.CreateFromTask( async () =>
         {
@@ -71,6 +94,7 @@ public class TeacherTestViewModel : ViewModelBase
                 isNew = !isNew;
             _completionSource.SetResult(true);
         }, canSave);
+        
         AddQuestionCommand = ReactiveCommand.CreateFromTask(async (QueryTypeViewModel questionType) =>
         {
             try
@@ -86,10 +110,44 @@ public class TeacherTestViewModel : ViewModelBase
             }
         });
         
+        RemoveQueryCommand = ReactiveCommand.CreateFromTask(async (QueryTestTeacherViewModel query) =>
+        {
+            if (await MessageBoxManager.GetMessageBoxStandard("Delete", "Вы уверены?", ButtonEnum.YesNo).ShowAsync() == ButtonResult.No)
+            {
+                return;
+            }
+
+            if (!await query.Delete())
+            {
+                await MessageBox.ShowMessageBox("Error", "Не удалось удалить вопрос");
+                return;
+            }
+
+            Queries.Remove(query);
+        });
+
+        Queries.CollectionChanged += QueriesOnCollectionChanged;
         this.WhenAnyValue(x => x.Title).Subscribe(async s => { ShortTitle = await GetShortTitle(s); });
         RxApp.MainThreadScheduler.Schedule(async s => { ShortTitle = await GetShortTitle(_test.Name); });
     }
 
+    private void QueriesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+            foreach (QueryTestTeacherViewModel query in e.NewItems)
+                query.WhenAnyValue(x => x.IsValid).Subscribe(s =>
+                {
+                    if (s)
+                        CountRightQueries += 1;
+                    else
+                        if(CountRightQueries > 0)
+                            CountRightQueries -= 1;
+                    Console.WriteLine($"{query.QueryString} is valid - " + s);
+                });
+    }
+
+    
+    
     private void LoadData()
     {
         Task.Run(LoadQueryTypes);
@@ -102,7 +160,18 @@ public class TeacherTestViewModel : ViewModelBase
         var queries = _test.GetTestQueries();
         if (!queries.Any()) return;
         if (Queries.Any()) return;
-        Queries.AddRange(queries);
+        RxApp.MainThreadScheduler.Schedule(() =>
+        {
+            Queries.AddRange(queries); 
+            this.WhenAnyValue(x => x.CountRightQueries).Subscribe(s =>
+            {
+                if (s < Queries.Count)
+                    QueriesValid = false;
+                else if(s == Queries.Count)
+                    QueriesValid = true;
+                Console.WriteLine($"test {_test.Name} queries is valid - " + QueriesValid);
+            });
+        });
     }
 
     private async void LoadQueryTypes()

@@ -69,6 +69,26 @@ public class QueryTest
         }
     }
     
+    public async Task<bool> DeleteQuery()
+    {
+        try
+        {
+            Locator.GetLocator().GetService<TestingSystemDbContext>().QueryTest.Remove(this);
+            await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
+    
+    public void CanselDeleteTest()
+    {
+        Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).State = EntityState.Unchanged;
+    }
+    
     // public async Task<bool> SaveChanges()
     // {
     //     try

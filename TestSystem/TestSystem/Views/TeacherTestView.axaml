@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:TestSystem.ViewModels"
+             xmlns:local="using:TestSystem"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TestSystem.Views.TeacherTestView"
              x:DataType="vm:TeacherTestViewModel">
@@ -71,16 +72,30 @@
             </DockPanel>
             <ListBox Grid.Row="1"
                      ItemsSource="{Binding Queries}">
-                <!-- <ListBox.DataTemplates> -->
-                <!--     <DataTemplate x:DataType="vm:QueryTestTeacherViewModel"> -->
-                <!--         <Border BorderBrush="DarkGray" -->
-                <!--                 BorderThickness="0 0 0 2" -->
-                <!--                 Padding="20"> -->
-                <!--             <TextBlock Text="{Binding QueryString}" /> -->
-                <!--         </Border> -->
-                <!--     </DataTemplate> -->
-                <!-- </ListBox.DataTemplates> -->
-                
+                <ListBox.DataTemplates>
+                    <DataTemplate x:DataType="vm:QueryTestTeacherViewModel">
+                        <Grid ColumnDefinitions="* auto">
+                            <ContentControl Grid.Column="0" Content="{Binding .}">
+                                <ContentControl.ContentTemplate>
+                                    <local:ViewLocator/>
+                                </ContentControl.ContentTemplate>
+                            </ContentControl>
+                            <StackPanel Grid.Column="1" 
+                                        Orientation="Horizontal"
+                                        Spacing="10">
+                                <Button Classes="Flat"
+                                        Command="{Binding $parent[UserControl].((vm:TeacherTestViewModel)DataContext).RemoveQueryCommand}"
+                                        CommandParameter="{Binding .}">
+                                    <Button.Content>
+                                        <Image Source="avares://TestSystem/Assets/delete-white.png" 
+                                               Width="18"
+                                               Height="18"/>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.DataTemplates>
                 <!-- <ListBox.Items> -->
                 <!--     <ListBoxItem Padding="0" -->
                 <!--                  Margin="2"> -->

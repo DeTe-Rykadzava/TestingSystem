@@ -95,7 +95,7 @@
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch">
                             <Image Grid.Column="0"
-                                   Source="avares://TestSystem/Assets/delete.png"
+                                   Source="avares://TestSystem/Assets/delete-black.png"
                                    Width="32"
                                    Height="32"
                                    Stretch="Fill"/>
