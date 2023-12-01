@@ -2,13 +2,15 @@ using TestSystem.Models;
 
 namespace TestSystem.ViewModels;
 
-public class QueryAnswerViewModel : ViewModelBase
+public class TeacherQueryAnswerViewModel : ViewModelBase
 {
     private readonly QueryAnswer _answer;
 
     public int Id => _answer.Id;
-    
-    public QueryAnswerViewModel(QueryAnswer answer)
+
+    public string Answer => _answer.Answer;
+
+    public TeacherQueryAnswerViewModel(QueryAnswer answer)
     {
         _answer = answer;
     }

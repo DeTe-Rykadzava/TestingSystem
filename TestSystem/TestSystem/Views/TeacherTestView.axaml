@@ -52,97 +52,37 @@
                                     CommandParameter="{Binding .}"/>
                         </DataTemplate>
                     </ComboBox.DataTemplates>
-                    <!-- <ComboBox.Items> -->
-                    <!--     <ComboBoxItem > -->
-                    <!--         <Button Classes="Flat" -->
-                    <!--                 BorderBrush="#03a9f4" -->
-                    <!--                 BorderThickness="0 0 0 2" -->
-                    <!--                 Content="With one answer" -->
-                    <!--                 CornerRadius="0"/> -->
-                    <!--     </ComboBoxItem> -->
-                    <!--     <ComboBoxItem > -->
-                    <!--         <Button Classes="Flat" -->
-                    <!--                 BorderBrush="#03a9f4" -->
-                    <!--                 BorderThickness="0 0 0 2" -->
-                    <!--                 Content="With many answers" -->
-                    <!--                 CornerRadius="0"/> -->
-                    <!--     </ComboBoxItem> -->
-                    <!-- </ComboBox.Items> -->
                 </ComboBox>
             </DockPanel>
-            <ListBox Grid.Row="1"
-                     ItemsSource="{Binding Queries}">
-                <ListBox.DataTemplates>
-                    <DataTemplate x:DataType="vm:QueryTestTeacherViewModel">
-                        <Grid ColumnDefinitions="* auto">
-                            <ContentControl Grid.Column="0" Content="{Binding .}">
-                                <ContentControl.ContentTemplate>
-                                    <local:ViewLocator/>
-                                </ContentControl.ContentTemplate>
-                            </ContentControl>
-                            <StackPanel Grid.Column="1" 
-                                        Orientation="Horizontal"
-                                        Spacing="10">
-                                <Button Classes="Flat"
-                                        Command="{Binding $parent[UserControl].((vm:TeacherTestViewModel)DataContext).RemoveQueryCommand}"
-                                        CommandParameter="{Binding .}">
-                                    <Button.Content>
-                                        <Image Source="avares://TestSystem/Assets/delete-white.png" 
-                                               Width="18"
-                                               Height="18"/>
-                                    </Button.Content>
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.DataTemplates>
-                <!-- <ListBox.Items> -->
-                <!--     <ListBoxItem Padding="0" -->
-                <!--                  Margin="2"> -->
-                <!--         <Border BorderBrush="DarkGray" -->
-                <!--                 BorderThickness="0 0 0 2" -->
-                <!--                 Padding="20"> -->
-                <!--             <TextBlock Text="test" /> -->
-                <!--         </Border> -->
-                <!--     </ListBoxItem> -->
-                <!--     <ListBoxItem Padding="0" -->
-                <!--                  Margin="2"> -->
-                <!--         <Border BorderBrush="DarkGray" -->
-                <!--                 BorderThickness="1" -->
-                <!--                 CornerRadius="8" -->
-                <!--                 Padding="20"> -->
-                <!--             <TextBlock Text="test" /> -->
-                <!--         </Border> -->
-                <!--     </ListBoxItem> -->
-                <!--     <ListBoxItem Padding="0" -->
-                <!--                  Margin="2"> -->
-                <!--         <Border BorderBrush="DarkGray" -->
-                <!--                 BorderThickness="1" -->
-                <!--                 CornerRadius="8" -->
-                <!--                 Padding="20"> -->
-                <!--             <TextBlock Text="test" /> -->
-                <!--         </Border> -->
-                <!--     </ListBoxItem> -->
-                <!--     <ListBoxItem Padding="0" -->
-                <!--                  Margin="2"> -->
-                <!--         <Border BorderBrush="DarkGray" -->
-                <!--                 BorderThickness="1" -->
-                <!--                 CornerRadius="8" -->
-                <!--                 Padding="20"> -->
-                <!--             <TextBlock Text="test" /> -->
-                <!--         </Border> -->
-                <!--     </ListBoxItem> -->
-                <!--     <ListBoxItem Padding="0" -->
-                <!--                  Margin="2"> -->
-                <!--         <Border BorderBrush="DarkGray" -->
-                <!--                 BorderThickness="1" -->
-                <!--                 CornerRadius="8" -->
-                <!--                 Padding="20"> -->
-                <!--             <TextBlock Text="test" /> -->
-                <!--         </Border> -->
-                <!--     </ListBoxItem> -->
-                <!-- </ListBox.Items> -->
-            </ListBox>
+            <ScrollViewer Grid.Row="1">
+                <ItemsControl ItemsSource="{Binding Queries}">
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate x:DataType="vm:QueryTestTeacherViewModel">
+                            <Grid ColumnDefinitions="* auto">
+                                <ContentControl Grid.Column="0" Content="{Binding .}">
+                                    <ContentControl.ContentTemplate>
+                                        <local:ViewLocator/>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+                                <StackPanel Grid.Column="1" 
+                                            Orientation="Horizontal"
+                                            Spacing="10">
+                                    <Button Classes="Flat"
+                                            Command="{Binding $parent[UserControl].((vm:TeacherTestViewModel)DataContext).RemoveQueryCommand}"
+                                            CommandParameter="{Binding .}"
+                                            VerticalAlignment="Top">
+                                        <Button.Content>
+                                            <Image Source="avares://TestSystem/Assets/delete-white.png" 
+                                                   Width="18"
+                                                   Height="18"/>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
         <Border Grid.Row="2"
                 BorderBrush="DarkGray"

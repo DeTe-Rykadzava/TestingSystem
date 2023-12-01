@@ -22,7 +22,7 @@ public class QueryAnswer
         Answer = answerValue;
     }
 
-    public static async Task<QueryAnswerViewModel?> CreateQueryAnswer(QueryTest query)
+    public static async Task<TeacherQueryAnswerViewModel?> CreateQueryAnswer(QueryTest query)
     {
         try
         {
@@ -33,12 +33,27 @@ public class QueryAnswer
             await Locator.GetLocator().GetService<TestingSystemDbContext>().QueryAnswer.AddAsync(newAnswer);
             await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
             query.Answers.Add(newAnswer);
-            return new QueryAnswerViewModel(newAnswer);
+            return new TeacherQueryAnswerViewModel(newAnswer);
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message + "\n\n"+ e.InnerException);
             return null;
+        }
+    }
+    
+    public async Task<bool> DeleteAnswer()
+    {
+        try
+        {
+            Locator.GetLocator().GetService<TestingSystemDbContext>().QueryAnswer.Remove(this);
+            await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
         }
     }
 }

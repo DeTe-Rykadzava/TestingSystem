@@ -22,13 +22,13 @@ public class QueryTest
         
     }
 
-    // public List<AskAnswerViewModel> GetAskAnswers()
-    // {
-    //     if (Answers == null)
-    //         return new List<AskAnswerViewModel>();
-    //     var answers = Answers.Select(s => AskAnswerViewModel.GetAnswer(s)).ToList();
-    //     return answers;
-    // }
+    public List<TeacherQueryAnswerViewModel> GetQueryAnswers()
+    {
+        if (Answers == null)
+            return new List<TeacherQueryAnswerViewModel>();
+        var answers = Answers.Select(s => new TeacherQueryAnswerViewModel(s)).ToList();
+        return answers;
+    }
     //
     // public async void SetRightAnswer(int rightAnswerId)
     // {
@@ -89,32 +89,28 @@ public class QueryTest
         Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).State = EntityState.Unchanged;
     }
     
-    // public async Task<bool> SaveChanges()
-    // {
-    //     try
-    //     {
-    //         await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
-    //         return true;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         return false;
-    //     }
-    // }
+    public async Task ResetChanges()
+    {
+        var originalQuery = (QueryTest)Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).OriginalValues.ToObject();
+        foreach (var answer  in Answers)
+        {
+            if (originalQuery.Answers.FirstOrDefault(x => x.Id == answer.Id) == null)
+                await answer.DeleteAnswer();
+        }
+        Query = originalQuery.Query;
+    }
     
-    // public static async Task<bool> DeleteAsk(QueryTest ask)
-    // {
-    //     try
-    //     {
-    //         Locator.GetLocator().GetService<TestingSystemDbContext>().TestAsk.Remove(ask);
-    //         await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
-    //         return true;
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         return false;
-    //     }
-    // }
+    public async Task<bool> SaveChanges()
+    {
+        try
+        {
+            await Locator.GetLocator().GetService<TestingSystemDbContext>().SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
 }

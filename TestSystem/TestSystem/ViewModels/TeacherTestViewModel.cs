@@ -75,6 +75,12 @@ public class TeacherTestViewModel : ViewModelBase
             if(!isNew)
                 await ResetChanges();
             _completionSource.SetResult(false);
+            foreach (var query in Queries)
+            {
+                await query.ResetChanges();
+            }
+            Queries.Clear();
+            Queries.CollectionChanged -= QueriesOnCollectionChanged;
         });
         var canSave = this.WhenAnyValue( 
                 x => x.QueriesValid,x => x.Title, 
@@ -87,12 +93,15 @@ public class TeacherTestViewModel : ViewModelBase
             if (!await SaveChanges())
             {
                 await MessageBox.ShowMessageBox("Error","Cannot save changes");
-                await DeleteTest();
+                if (isNew)
+                    await DeleteTest();
                 return;
             }
             if (isNew)
                 isNew = !isNew;
             _completionSource.SetResult(true);
+            Queries.Clear();
+            Queries.CollectionChanged -= QueriesOnCollectionChanged;
         }, canSave);
         
         AddQuestionCommand = ReactiveCommand.CreateFromTask(async (QueryTypeViewModel questionType) =>
