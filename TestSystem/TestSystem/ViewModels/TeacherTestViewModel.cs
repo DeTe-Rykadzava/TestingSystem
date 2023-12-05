@@ -90,6 +90,14 @@ public class TeacherTestViewModel : ViewModelBase
             .DistinctUntilChanged();
         SaveCommand = ReactiveCommand.CreateFromTask( async () =>
         {
+            foreach (var query in Queries)
+            { 
+                var saved = await query.SaveChanges();
+                if (saved) continue;
+                await query.ResetChanges();
+                if(!await SaveChanges()) 
+                    await query.Delete();
+            }
             if (!await SaveChanges())
             {
                 await MessageBox.ShowMessageBox("Error","Cannot save changes");
@@ -137,6 +145,14 @@ public class TeacherTestViewModel : ViewModelBase
 
         Queries.CollectionChanged += QueriesOnCollectionChanged;
         this.WhenAnyValue(x => x.Title).Subscribe(async s => { ShortTitle = await GetShortTitle(s); });
+        this.WhenAnyValue(x => x.CountRightQueries).Subscribe(s =>
+        {
+            if (s < Queries.Count)
+                QueriesValid = false;
+            else if(s == Queries.Count)
+                QueriesValid = true;
+            Console.WriteLine($"test {_test.Name} queries is valid - " + QueriesValid);
+        });
         RxApp.MainThreadScheduler.Schedule(async s => { ShortTitle = await GetShortTitle(_test.Name); });
     }
 
@@ -153,6 +169,8 @@ public class TeacherTestViewModel : ViewModelBase
                             CountRightQueries -= 1;
                     Console.WriteLine($"{query.QueryString} is valid - " + s);
                 });
+        if (e.OldItems != null)
+            CountRightQueries -= e.OldItems.Count;
     }
 
     
@@ -168,18 +186,10 @@ public class TeacherTestViewModel : ViewModelBase
     {
         var queries = _test.GetTestQueries();
         if (!queries.Any()) return;
-        if (Queries.Any()) return;
+        // if (Queries.Any()) return;
         RxApp.MainThreadScheduler.Schedule(() =>
         {
             Queries.AddRange(queries); 
-            this.WhenAnyValue(x => x.CountRightQueries).Subscribe(s =>
-            {
-                if (s < Queries.Count)
-                    QueriesValid = false;
-                else if(s == Queries.Count)
-                    QueriesValid = true;
-                Console.WriteLine($"test {_test.Name} queries is valid - " + QueriesValid);
-            });
         });
     }
 

@@ -2,8 +2,10 @@ using System.Reflection.Metadata;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using DynamicData;
 using ReactiveUI;
 using TestSystem.Models;
@@ -34,9 +36,33 @@ public class QueryTestTeacherViewModel : ViewModelBase
 
     public ObservableCollection<TeacherQueryAnswerViewModel> Answers { get; } = new();
 
+    private bool _oneAnswer = false;
+    public bool OneAnswer
+    {
+        get => _oneAnswer;
+        private set => this.RaiseAndSetIfChanged(ref _oneAnswer, value);
+    }
+
+    public ReactiveCommand<TeacherQueryAnswerViewModel, Unit> RemoveAnswer { get; }
+
+    public ICommand AddQueryAnswer { get; }
+
     public QueryTestTeacherViewModel(QueryTest query)
     {
         _query = query;
+
+        RemoveAnswer = ReactiveCommand.CreateFromTask(async (TeacherQueryAnswerViewModel answer) =>
+        {
+            if (await answer.Delete())
+                Answers.Remove(answer);
+        });
+        
+        AddQueryAnswer = ReactiveCommand.CreateFromTask(async () =>
+        {
+            var query = await QueryAnswer.CreateQueryAnswer(_query);
+            if(query != null)
+                Answers.Add(query);
+        });
         
         this.WhenAnyValue(x => x.QueryString).Subscribe(s =>
         {
@@ -45,6 +71,14 @@ public class QueryTestTeacherViewModel : ViewModelBase
             else
                 IsValid = false;
 
+        });
+
+        this.WhenAnyValue(x => x.Answers.Count).Subscribe(s =>
+        {
+            if (s == 1)
+                OneAnswer = true;
+            else if(s > 1)
+                OneAnswer = false;
         });
 
         RxApp.MainThreadScheduler.Schedule(LoadData);
@@ -62,6 +96,7 @@ public class QueryTestTeacherViewModel : ViewModelBase
     {
         await _query.ResetChanges();
         QueryString = _query.Query;
+        this.RaisePropertyChanged(nameof(QueryString));
     }
 
     public async Task<bool> Delete()
@@ -71,5 +106,10 @@ public class QueryTestTeacherViewModel : ViewModelBase
             _query.CanselDeleteTest();
         return result;
     }
-    
+
+    public async Task<bool> SaveChanges()
+    {
+        return await _query.SaveChanges();
+    }
+
 }

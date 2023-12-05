@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using TestSystem.Models;
 
 namespace TestSystem.ViewModels;
@@ -13,5 +14,10 @@ public class TeacherQueryAnswerViewModel : ViewModelBase
     public TeacherQueryAnswerViewModel(QueryAnswer answer)
     {
         _answer = answer;
+    }
+
+    public async Task<bool> Delete()
+    {
+        return await _answer.DeleteAnswer();
     }
 }

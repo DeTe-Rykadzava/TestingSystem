@@ -92,11 +92,6 @@ public class QueryTest
     public async Task ResetChanges()
     {
         var originalQuery = (QueryTest)Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).OriginalValues.ToObject();
-        foreach (var answer  in Answers)
-        {
-            if (originalQuery.Answers.FirstOrDefault(x => x.Id == answer.Id) == null)
-                await answer.DeleteAnswer();
-        }
         Query = originalQuery.Query;
     }
     

@@ -17,7 +17,6 @@
             <StackPanel Grid.Row="0"
                         Margin="20"
                         Spacing="20">
-                <TextBlock Text="Question text"/>
                 <TextBox Text="{Binding QueryString}"/>
             </StackPanel>
             <StackPanel Grid.Row="1"
@@ -39,50 +38,29 @@
                         <ItemsControl.DataTemplates>
                             <DataTemplate x:DataType="vm:TeacherQueryAnswerViewModel">
                                 <DockPanel>
-                                    <RadioButton DockPanel.Dock="Left"
-                                                 Margin="20"
-                                                 GroupName="one answer"/>
-                                    <TextBlock Text="{Binding Answer}"
-                                               TextWrapping="Wrap"
-                                               VerticalAlignment="Center"/>    
+                                    <Button Classes="Flat"
+                                            DockPanel.Dock="Right"
+                                            Command="{Binding $parent[ContentControl].((vm:QueryTestTeacherViewModel)DataContext).RemoveAnswer}"
+                                            CommandParameter="{Binding .}"
+                                            IsEnabled="{Binding $parent[UserControl].((vm:QueryTestTeacherViewModel)DataContext).OneAnswer, Converter={x:Static BoolConverters.Not}}"
+                                            VerticalAlignment="Top">
+                                        <Button.Content>
+                                            <Image Source="avares://TestSystem/Assets/delete-white.png" 
+                                                   Width="18"
+                                                   Height="18"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <DockPanel DockPanel.Dock="Left">
+                                        <RadioButton DockPanel.Dock="Left"
+                                                     Margin="20"
+                                                     GroupName="one answer"/>
+                                        <TextBlock Text="{Binding Answer}"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"/>    
+                                    </DockPanel>
                                 </DockPanel>
                             </DataTemplate>
                         </ItemsControl.DataTemplates>
-                        <!-- <ItemsControl.Items> -->
-                        <!--     <DockPanel> -->
-                        <!--         <RadioButton DockPanel.Dock="Left" -->
-                        <!--                      Margin="20" -->
-                        <!--                      GroupName="Question"/> -->
-                        <!--         <TextBox Text="Answer 1" -->
-                        <!--                  TextWrapping="Wrap" -->
-                        <!--                  VerticalAlignment="Center"/>     -->
-                        <!--     </DockPanel> -->
-                        <!--     <DockPanel> -->
-                        <!--         <RadioButton DockPanel.Dock="Left" -->
-                        <!--                      Margin="20" -->
-                        <!--                      GroupName="Question"/> -->
-                        <!--         <TextBox Text="Answer 2" -->
-                        <!--                  TextWrapping="Wrap" -->
-                        <!--                  VerticalAlignment="Center"/>     -->
-                        <!--     </DockPanel> -->
-                        <!--     <DockPanel> -->
-                        <!--         <RadioButton DockPanel.Dock="Left" -->
-                        <!--                      Margin="20" -->
-                        <!--                      GroupName="Question"/> -->
-                        <!--         <TextBox Text="Answer 3" -->
-                        <!--                  TextWrapping="Wrap" -->
-                        <!--                  VerticalAlignment="Center"/>     -->
-                        <!--     </DockPanel> -->
-                        <!--     <DockPanel> -->
-                        <!--         <RadioButton DockPanel.Dock="Left" -->
-                        <!--                      Margin="20" -->
-                        <!--                      GroupName="Question"/> -->
-                        <!--         <TextBox Text="Answer 4" -->
-                        <!--                  TextWrapping="Wrap" -->
-                        <!--                  VerticalAlignment="Center"/>     -->
-                        <!--     </DockPanel> -->
-                        <!--         -->
-                        <!-- </ItemsControl.Items> -->
                     </ItemsControl>
                 </ScrollViewer>
             </StackPanel>
