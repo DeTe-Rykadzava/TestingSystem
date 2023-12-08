@@ -47,17 +47,6 @@ public class Test
     public async Task<QueryTestTeacherViewModel?> AddQuery(QueryTypeViewModel type)
     {
         return await QueryTest.CreateNewQuery(this, type);
-        // switch (type.TypeName)
-        // {
-        //     case "one answer":
-        //         return await QueryTest.CreateNewQuery(this, type);
-        //         break;
-        //     case "many answer":
-        //         return await QueryTest.CreateNewQuery(this, type);
-        //         break;
-        //     default:
-        //         return null;
-        // }
     }
 
     public static async Task<List<TeacherTestViewModel>> GetAllUserTests()

@@ -90,21 +90,12 @@ public class TeacherTestViewModel : ViewModelBase
             .DistinctUntilChanged();
         SaveCommand = ReactiveCommand.CreateFromTask( async () =>
         {
-            foreach (var query in Queries)
-            { 
-                var saved = await query.SaveChanges();
-                if (saved) continue;
-                await query.ResetChanges();
-                if(!await SaveChanges()) 
-                    await query.Delete();
-            }
             if (!await SaveChanges())
             {
                 await MessageBox.ShowMessageBox("Error","Cannot save changes");
-                if (isNew)
-                    await DeleteTest();
                 return;
             }
+            
             if (isNew)
                 isNew = !isNew;
             _completionSource.SetResult(true);

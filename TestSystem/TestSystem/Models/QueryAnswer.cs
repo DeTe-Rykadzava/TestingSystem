@@ -56,4 +56,10 @@ public class QueryAnswer
             return false;
         }
     }
+
+    public async Task ResetChanges()
+    {
+        var originalValues = (QueryAnswer)Locator.GetLocator().GetService<TestingSystemDbContext>().Entry(this).OriginalValues.ToObject();
+        Answer = originalValues.Answer;
+    }
 }

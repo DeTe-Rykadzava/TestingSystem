@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using ReactiveUI;
 using TestSystem.Models;
 
 namespace TestSystem.ViewModels;
@@ -9,7 +10,26 @@ public class TeacherQueryAnswerViewModel : ViewModelBase
 
     public int Id => _answer.Id;
 
-    public string Answer => _answer.Answer;
+    public string Answer
+    {
+        get => _answer.Answer;
+        set
+        {
+            _answer.Answer = value;
+            this.RaisePropertyChanged();
+        }
+    }
+
+    public bool IsCorrect
+    {
+        get => _answer.IsCorrect;
+        set
+        {
+            _answer.IsCorrect = value;
+            this.RaisePropertyChanged();
+        }
+        
+    }
 
     public TeacherQueryAnswerViewModel(QueryAnswer answer)
     {
@@ -19,5 +39,10 @@ public class TeacherQueryAnswerViewModel : ViewModelBase
     public async Task<bool> Delete()
     {
         return await _answer.DeleteAnswer();
+    }
+
+    public async Task ResetChanges()
+    {
+        await _answer.ResetChanges();
     }
 }

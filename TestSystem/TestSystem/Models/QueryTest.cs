@@ -29,15 +29,7 @@ public class QueryTest
         var answers = Answers.Select(s => new TeacherQueryAnswerViewModel(s)).ToList();
         return answers;
     }
-    //
-    // public async void SetRightAnswer(int rightAnswerId)
-    // {
-    //     var answer = await Locator.GetLocator().GetService<TestingSystemDbContext>().AskAnswer
-    //         .FirstOrDefaultAsync(x => x.Id == rightAnswerId);
-    //     if (answer != null)
-    //         RightAnswer = answer;
-    // }
-    //
+    
     public static async Task<QueryTestTeacherViewModel?> CreateNewQuery(Test test, QueryTypeViewModel queryType )
     {
         var type = await Locator.GetLocator().GetService<TestingSystemDbContext>()!.QueryType

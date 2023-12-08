@@ -28,7 +28,8 @@
                             BorderBrush="LightGray"
                             BorderThickness="0 0 0 1"
                             CornerRadius="0"
-                            Content="Add answer"/>
+                            Content="Add answer"
+                            Command="{Binding AddQueryAnswer}"/>
                     <TextBlock Text="Answers"
                                FontSize="16"
                                FontStyle="Italic"/>
@@ -52,9 +53,10 @@
                                     </Button>
                                     <DockPanel DockPanel.Dock="Left">
                                         <RadioButton DockPanel.Dock="Left"
+                                                     IsChecked="{Binding IsCorrect}"
                                                      Margin="20"
-                                                     GroupName="one answer"/>
-                                        <TextBlock Text="{Binding Answer}"
+                                                     GroupName="{Binding Id}"/>
+                                        <TextBox Text="{Binding Answer}"
                                                    TextWrapping="Wrap"
                                                    VerticalAlignment="Center"/>    
                                     </DockPanel>

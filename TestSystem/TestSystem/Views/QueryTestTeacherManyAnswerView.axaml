@@ -6,10 +6,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="TestSystem.Views.QueryTestTeacherManyAnswerView"
              x:DataType="vm:QueryTestTeacherManyAnswerViewModel">
-    <!-- <StackPanel> -->
-    <!--     <TextBlock Text="Несколько ответов"/> -->
-    <!--     <TextBlock Text="{Binding QueryString}"/> -->
-    <!-- </StackPanel> -->
     <Panel>
         <TextBlock Text="несколько ответов"
                    FontSize="16"
@@ -21,33 +17,55 @@
             <StackPanel Grid.Row="0"
                         Margin="20"
                         Spacing="20">
-                <TextBlock Text="Question text"/>
                 <TextBox Text="{Binding QueryString}"/>
             </StackPanel>
-            <Grid Grid.Row="1"
-                  RowDefinitions="Auto *"
-                  Margin="20">
-                <TextBlock Grid.Row="0"
-                           Text="Answers"
-                           FontSize="16"
-                           FontStyle="Italic"/>
-                <ListBox Grid.Row="1">
-                    <ListBox.Items>
-                        <ListBoxItem>
-                            <TextBlock Text="Answer 1"/>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <TextBlock Text="Answer 2"/>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <TextBlock Text="Answer 3"/>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <TextBlock Text="Answer 4"/>
-                        </ListBoxItem>
-                    </ListBox.Items>
-                </ListBox>
-            </Grid>
+            <StackPanel Grid.Row="1"
+                        Margin="20"
+                        Spacing="20">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Classes="Flat"
+                            BorderBrush="LightGray"
+                            BorderThickness="0 0 0 1"
+                            CornerRadius="0"
+                            Content="Add answer"
+                            Command="{Binding AddQueryAnswer}"/>
+                    <TextBlock Text="Answers"
+                               FontSize="16"
+                               FontStyle="Italic"/>
+                </DockPanel>
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Answers}">
+                        <ItemsControl.DataTemplates>
+                            <DataTemplate x:DataType="vm:TeacherQueryAnswerViewModel">
+                                <DockPanel>
+                                    <Button Classes="Flat"
+                                            DockPanel.Dock="Right"
+                                            Command="{Binding $parent[ContentControl].((vm:QueryTestTeacherViewModel)DataContext).RemoveAnswer}"
+                                            CommandParameter="{Binding .}"
+                                            IsEnabled="{Binding $parent[UserControl].((vm:QueryTestTeacherViewModel)DataContext).OneAnswer, Converter={x:Static BoolConverters.Not}}"
+                                            VerticalAlignment="Top">
+                                        <Button.Content>
+                                            <Image Source="avares://TestSystem/Assets/delete-white.png" 
+                                                   Width="18"
+                                                   Height="18"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <DockPanel DockPanel.Dock="Left">
+                                        <CheckBox DockPanel.Dock="Left"
+                                                  IsChecked="{Binding IsCorrect}"
+                                                  Margin="20"
+                                                  Content="{Binding Answer}"/>
+                                        <TextBox Text="{Binding Answer}"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"/>    
+                                    </DockPanel>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ItemsControl.DataTemplates>
+                    </ItemsControl>
+                </ScrollViewer>
+            </StackPanel>
         </Grid>
     </Panel>
 </UserControl>

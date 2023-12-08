@@ -59,9 +59,9 @@ public class QueryTestTeacherViewModel : ViewModelBase
         
         AddQueryAnswer = ReactiveCommand.CreateFromTask(async () =>
         {
-            var query = await QueryAnswer.CreateQueryAnswer(_query);
-            if(query != null)
-                Answers.Add(query);
+            var answer = await QueryAnswer.CreateQueryAnswer(_query);
+            if(answer != null)
+                Answers.Add(answer);
         });
         
         this.WhenAnyValue(x => x.QueryString).Subscribe(s =>
@@ -96,6 +96,10 @@ public class QueryTestTeacherViewModel : ViewModelBase
     {
         await _query.ResetChanges();
         QueryString = _query.Query;
+        foreach (var answer in Answers)
+        {
+            await answer.ResetChanges();
+        }
         this.RaisePropertyChanged(nameof(QueryString));
     }
 
@@ -105,11 +109,6 @@ public class QueryTestTeacherViewModel : ViewModelBase
         if(!result)
             _query.CanselDeleteTest();
         return result;
-    }
-
-    public async Task<bool> SaveChanges()
-    {
-        return await _query.SaveChanges();
     }
 
 }
