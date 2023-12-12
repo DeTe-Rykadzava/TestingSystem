@@ -20,7 +20,7 @@
                           BorderThickness="0 0 0 2"
                           Content="With one answer"
                           CornerRadius="0"/>
-                </ComboBoxItem>
+                </ComboBoxItem> 
                 <ComboBoxItem >
                   <Button Classes="Flat"
                           BorderBrush="#03a9f4"
