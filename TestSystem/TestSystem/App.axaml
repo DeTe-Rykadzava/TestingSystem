@@ -10,7 +10,7 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-
+ 
     <Application.Styles>
         <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="LightBlue" SecondaryColor="Cyan" />
         <StyleInclude Source="Styles/ComboBoxCannotSelectStyle.axaml"></StyleInclude>
