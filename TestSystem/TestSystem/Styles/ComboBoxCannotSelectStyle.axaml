@@ -16,7 +16,7 @@
               <ComboBox.Items>
                 <ComboBoxItem >
                   <Button Classes="Flat"
-                          BorderBrush="#03a9f4"
+                          BorderBrush="#03a9f5"
                           BorderThickness="0 0 0 2"
                           Content="With one answer"
                           CornerRadius="0"/>
