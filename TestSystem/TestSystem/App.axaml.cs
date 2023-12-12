@@ -47,7 +47,7 @@ public partial class App : Application
 
         if (successConDatabase)
         {
-            // DI
+            // DIGMA
             Locator.GetLocator().Register<TestingSystemDbContext>(() => TestingSystemDbContext.Instance);
         
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
